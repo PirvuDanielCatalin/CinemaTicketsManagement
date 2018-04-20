@@ -61,7 +61,7 @@ public class RegisterPage extends javax.swing.JFrame {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setSize(new java.awt.Dimension(409, 322));
+        setSize(getPreferredSize());
 
         Title.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         Title.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -131,7 +131,7 @@ public class RegisterPage extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(ClientCheck, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(ClientCheck, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(ManagerCheck, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -141,20 +141,15 @@ public class RegisterPage extends javax.swing.JFrame {
                             .addComponent(User, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(ConfPasswordTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(UserTxt, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
-                                .addComponent(PasswordTxt, javax.swing.GroupLayout.Alignment.LEADING)))
-                        .addGap(0, 11, Short.MAX_VALUE)))
+                            .addComponent(ConfPasswordTxt)
+                            .addComponent(UserTxt)
+                            .addComponent(PasswordTxt))))
                 .addGap(15, 15, 15))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(104, 104, 104)
-                .addComponent(RegisterBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(92, 92, 92)
+                .addComponent(RegisterBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
+                .addGap(99, 99, 99))
         );
-
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {ConfPasswordTxt, PasswordTxt, UserTxt});
-
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -172,10 +167,11 @@ public class RegisterPage extends javax.swing.JFrame {
                     .addComponent(ConfPasswordTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(ClientCheck, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(ManagerCheck, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(RegisterBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(ClientCheck)
+                    .addComponent(ManagerCheck))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(RegisterBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {ConfPasswordTxt, Password, PasswordTxt, User, UserTxt, jLabel3});
@@ -186,9 +182,9 @@ public class RegisterPage extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(Title, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(Title, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -197,8 +193,8 @@ public class RegisterPage extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(Title, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -217,15 +213,48 @@ public class RegisterPage extends javax.swing.JFrame {
        //JOptionPane.showMessageDialog(null,"("+count+","+UserTxt.getText()+","+passw+","+cpassw+","+aux+")");
         if(passw.length()>0 && UserTxt.getText().length()>0 && passw.equals(cpassw))
        {
-         try {
-            Statement stmt = con.createStatement();
-            int confExecUpdate = stmt.executeUpdate(
-                    "INSERT INTO users (user,password,isManager) values "
-                    +"('"+UserTxt.getText()+"','"+passw+"',"+aux+")");
+           ResultSet rs=null;
+           try {
+               Statement isAlready=con.createStatement();
+               rs = isAlready.executeQuery(
+                       "select user,password"
+                     + "from users"
+                     + "where user='"+UserTxt.getText()+"' and password='"+passw+"'");
+             
+            } catch (SQLException ex) {
+               Logger.getLogger(RegisterPage.class.getName()).log(Level.SEVERE, null, ex);
+           }   
+              
+           try 
+           {
+               if(!rs.next())
+               {
+                   try 
+                   {
+                       Statement RegIn = con.createStatement();
+                       int confExecUpdate = RegIn.executeUpdate(
+                               "INSERT INTO users (user,password,isManager) values "
+                                       +"('"+UserTxt.getText()+"','"+passw+"',"+aux+")");
+                       
+                   } 
+                   catch (SQLException ex) 
+                   {
+                       Logger.getLogger(RegisterPage.class.getName()).log(Level.SEVERE, null, ex);
+                   }
+               }
+               else
+               {
+                   JOptionPane.showMessageDialog(null,"Account already created","Login Error",JOptionPane.ERROR_MESSAGE);
+               }
+           }
            
-        } catch (SQLException ex) {
-            Logger.getLogger(RegisterPage.class.getName()).log(Level.SEVERE, null, ex);}
-        }
+           catch (SQLException ex) 
+           {
+               Logger.getLogger(RegisterPage.class.getName()).log(Level.SEVERE, null, ex);
+           }
+           
+       
+       }
        else
        {
           //JOptionPane.showMessageDialog(null,"("+count+","+UserTxt.getText()+","+PasswordTxt.getPassword()+","+ConfPasswordTxt.getPassword()+","+aux+")");
