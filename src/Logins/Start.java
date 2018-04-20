@@ -1,13 +1,29 @@
 package Logins;
 
+import Cinema.Halls;
 import javax.swing.*;
 import java.sql.*;
-import Logins.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Start extends JFrame {
-    
+
+    Connection con;
+
+    public void DatabaseConnect() {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/cinemamanagement", //database name
+                    "root", //user
+                    "");                                            //password 
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(RegisterPage.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public Start() {
-        
+        DatabaseConnect();
         initComponents();
     }
 
@@ -197,34 +213,61 @@ public class Start extends JFrame {
 
     private void Reset_BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Reset_BtnActionPerformed
 
-        
+        UserForm UF = new UserForm();
+        UF.setVisible(true);
+        UF.setLocation(300, 200);
+        this.dispose();
+
     }//GEN-LAST:event_Reset_BtnActionPerformed
 
     private void Login_BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Login_BtnActionPerformed
 
-        String User=UserTxt.getText();
-        String Password=new String(PasswordTxt.getPassword());
-        //Conectare la baza de date...
-        
-//        if()//Userul se afla in baza de date (cinemamanagement.users)
-//        {
-//            // =>Forma de sali
-//        }
-//        else
-//        {
-//            JOptionPane.showMessageDialog(null,"Invalid login details","Login Error",JOptionPane.ERROR_MESSAGE);
-//        }
-        
-            
+        String User = UserTxt.getText();
+        String Password = new String(PasswordTxt.getPassword());
+        int aux = (ManagerCheck.isSelected()) ? 1 : 0;
+        int aux2=0;
+        if (Password.length() > 0 && UserTxt.getText().length() > 0) 
+        {
+            ResultSet rs = null;
+            try 
+            {
+                Statement isAlready = con.createStatement();
+                rs = isAlready.executeQuery(
+                          "select * "
+                        + "from users "
+                        + "where user='" + User + "' and password='" + Password + "'");
+                aux2=(rs.first())?rs.getInt(4):0;
+                if (rs.first() && aux2==aux) {
+                    Halls HS = new Halls();
+                    HS.setVisible(true);
+                    HS.setResizable(false);
+                    this.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Invalid login details", "Login Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } 
+            catch (SQLException ex) 
+            {
+                Logger.getLogger(RegisterPage.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        } 
+        else 
+        {
+
+            JOptionPane.showMessageDialog(null, "Invalid login details", "Login Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+
     }//GEN-LAST:event_Login_BtnActionPerformed
 
     private void Register_BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Register_BtnActionPerformed
 
-       RegisterPage RegPg =new RegisterPage();
-       RegPg.setVisible(true);
-       RegPg.setResizable(false);
-       this.dispose();
-      
+        RegisterPage RegPg = new RegisterPage();
+        RegPg.setVisible(true);
+        RegPg.setResizable(false);
+        this.dispose();
+
     }//GEN-LAST:event_Register_BtnActionPerformed
 
     private void PasswordTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordTxtActionPerformed
@@ -236,16 +279,15 @@ public class Start extends JFrame {
     }//GEN-LAST:event_UserTxtActionPerformed
 
     private void ManagerCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ManagerCheckActionPerformed
-        
+
         ClientCheck.setSelected(false);
     }//GEN-LAST:event_ManagerCheckActionPerformed
 
     private void ClientCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ClientCheckActionPerformed
-        
+
         ManagerCheck.setSelected(false);
     }//GEN-LAST:event_ClientCheckActionPerformed
 
-   
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -273,7 +315,7 @@ public class Start extends JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            Start JF=new Start();
+            Start JF = new Start();
             JF.setVisible(true);
             JF.setResizable(false);
         });

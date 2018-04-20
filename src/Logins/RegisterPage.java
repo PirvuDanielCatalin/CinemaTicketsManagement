@@ -217,8 +217,8 @@ public class RegisterPage extends javax.swing.JFrame {
            try {
                Statement isAlready=con.createStatement();
                rs = isAlready.executeQuery(
-                       "select user,password"
-                     + "from users"
+                       "select user,password "
+                     + "from users "
                      + "where user='"+UserTxt.getText()+"' and password='"+passw+"'");
              
             } catch (SQLException ex) {
@@ -247,7 +247,6 @@ public class RegisterPage extends javax.swing.JFrame {
                    JOptionPane.showMessageDialog(null,"Account already created","Login Error",JOptionPane.ERROR_MESSAGE);
                }
            }
-           
            catch (SQLException ex) 
            {
                Logger.getLogger(RegisterPage.class.getName()).log(Level.SEVERE, null, ex);
