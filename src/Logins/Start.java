@@ -18,7 +18,7 @@ public class Start extends JFrame {
                     "root", //user
                     "");                                            //password 
         } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(RegisterPage.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Start.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -66,6 +66,7 @@ public class Start extends JFrame {
         PasswordLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         UserTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        UserTxt.setText("test");
         UserTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 UserTxtActionPerformed(evt);
@@ -73,6 +74,7 @@ public class Start extends JFrame {
         });
 
         PasswordTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        PasswordTxt.setText("test");
         PasswordTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 PasswordTxtActionPerformed(evt);
@@ -224,8 +226,8 @@ public class Start extends JFrame {
 
         String User = UserTxt.getText();
         String Password = new String(PasswordTxt.getPassword());
-        int aux = (ManagerCheck.isSelected()) ? 1 : 0;
-        int aux2=0;
+        int Expectation = (ManagerCheck.isSelected()) ? 1 : 0;
+        int Reality=0;
         if (Password.length() > 0 && UserTxt.getText().length() > 0) 
         {
             ResultSet rs = null;
@@ -236,9 +238,9 @@ public class Start extends JFrame {
                           "select * "
                         + "from users "
                         + "where user='" + User + "' and password='" + Password + "'");
-                aux2=(rs.first())?rs.getInt(4):0;
-                if (rs.first() && aux2==aux) {
-                    Halls HS = new Halls();
+                Reality=(rs.first())?rs.getInt(4):0;
+                if (rs.first() && Expectation==Reality) {
+                    Halls HS = new Halls(User,Reality);
                     HS.setVisible(true);
                     HS.setResizable(false);
                     this.dispose();
