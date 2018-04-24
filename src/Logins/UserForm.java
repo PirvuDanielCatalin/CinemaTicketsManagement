@@ -98,7 +98,7 @@ public class UserForm extends javax.swing.JFrame {
                 Statement stmt = con.createStatement();
                 rs = stmt.executeQuery("select * from users where user='"+UserTxt.getText()+"'");
                 
-                if(rs.next())
+                if(rs.first())
                 {
                     PasswordForm PF = new PasswordForm(UserTxt.getText());
                     PF.setVisible(true);

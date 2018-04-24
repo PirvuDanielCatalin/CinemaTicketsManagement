@@ -1,8 +1,10 @@
 package Cinema;
 
+import Infos.HallInfo_CU;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -11,7 +13,9 @@ import javax.swing.JButton;
 public class Halls extends javax.swing.JFrame {
 
     Connection con;
-    ArrayList<JButton> Set;
+    String User;
+    int CM;
+    int nmbr;
     
     public void DatabaseConnect() {
         try {
@@ -25,24 +29,46 @@ public class Halls extends javax.swing.JFrame {
         }
     }
 
-    public Halls(String user,int CM) {
+    public Halls(String user,int _CM) {
         DatabaseConnect();
         initComponents();
+        
+        User=new String(user);
+        CM=_CM;
+        nmbr=60;
+        
         String Logged="Hello "+user;
         if(CM==1)
+        {
             Logged=Logged+" ( M )";
+            
+        }  
         else
-            Logged=Logged+" ( C )";
+        {
+             Logged=Logged+" ( C )";
+             RightPanelLayout.setVisible(false);
+        }
+           
         UserLogged.setText(Logged);
+        
         HallLayout.setLayout(new GridLayout(6,5));
         
-        Set=new ArrayList<>();
         for(int i=1;i<=30;i++)
         {
-            Set.add(new JButton("Button "+i));
+            JButton J=new JButton("S "+i);
+            J.addActionListener((ActionEvent e) -> 
+            {
+                Hall H=new Hall(user,_CM, ((JButton)e.getSource()).getText(),nmbr);
+                H.setVisible(true);
+                H.setResizable(false);
+            });
+            J.setVisible(false);
+            HallLayout.add(J);
         }
-        for(int i=1;i<=30;i++)
-        HallLayout.add(new JButton("Button "+i));
+        
+        /* Verificarea in baza de date a ce sali sunt deja adaugate*/
+        
+        
         
     }
 
@@ -59,14 +85,14 @@ public class Halls extends javax.swing.JFrame {
         RaportsTitle = new javax.swing.JLabel();
         RaportLayout = new javax.swing.JPanel();
         Report1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        Date1lb = new javax.swing.JLabel();
+        Date2lb = new javax.swing.JLabel();
         Date1Txt = new javax.swing.JTextField();
         Date2Txt = new javax.swing.JTextField();
         Rap1GoBtn = new javax.swing.JButton();
         Report2 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
+        HallTxt = new javax.swing.JTextField();
+        Hallb = new javax.swing.JLabel();
         Rap2GoBtn1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -75,6 +101,11 @@ public class Halls extends javax.swing.JFrame {
         Menu.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
 
         AddHallBtn.setText("Add");
+        AddHallBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddHallBtnActionPerformed(evt);
+            }
+        });
 
         LogOutBtn.setText("LogOut");
 
@@ -131,13 +162,13 @@ public class Halls extends javax.swing.JFrame {
 
         Report1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Date1");
-        jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        Date1lb.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        Date1lb.setText("Date1");
+        Date1lb.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Date2");
-        jLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        Date2lb.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        Date2lb.setText("Date2");
+        Date2lb.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         Date1Txt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
@@ -151,11 +182,11 @@ public class Halls extends javax.swing.JFrame {
                 .addGap(24, 24, 24)
                 .addGroup(Report1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(Report1Layout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Date2lb, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(Date2Txt))
                     .addGroup(Report1Layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Date1lb, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(Date1Txt)))
                 .addGap(25, 25, 25))
@@ -165,7 +196,7 @@ public class Halls extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        Report1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jLabel1, jLabel2});
+        Report1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {Date1lb, Date2lb});
 
         Report1Layout.setVerticalGroup(
             Report1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -173,25 +204,25 @@ public class Halls extends javax.swing.JFrame {
                 .addGap(23, 23, 23)
                 .addGroup(Report1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(Date1Txt)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE))
+                    .addComponent(Date1lb, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(Report1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
+                    .addComponent(Date2lb, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
                     .addComponent(Date2Txt))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(Rap1GoBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        Report1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jLabel1, jLabel2});
+        Report1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {Date1lb, Date2lb});
 
         Report2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        HallTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("Hall");
-        jLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        Hallb.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        Hallb.setText("Hall");
+        Hallb.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         Rap2GoBtn1.setText("Go");
 
@@ -201,9 +232,9 @@ public class Halls extends javax.swing.JFrame {
             Report2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(Report2Layout.createSequentialGroup()
                 .addGap(30, 30, 30)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(Hallb, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(HallTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(21, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Report2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -215,8 +246,8 @@ public class Halls extends javax.swing.JFrame {
             .addGroup(Report2Layout.createSequentialGroup()
                 .addGap(28, 28, 28)
                 .addGroup(Report2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE))
+                    .addComponent(Hallb, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(HallTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE))
                 .addGap(26, 26, 26)
                 .addComponent(Rap2GoBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(35, Short.MAX_VALUE))
@@ -284,6 +315,13 @@ public class Halls extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void AddHallBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddHallBtnActionPerformed
+        HallInfo_CU HICU =new HallInfo_CU();
+        HICU.setVisible(true);
+        HICU.setResizable(false);
+        
+    }//GEN-LAST:event_AddHallBtnActionPerformed
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -321,8 +359,12 @@ public class Halls extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AddHallBtn;
     private javax.swing.JTextField Date1Txt;
+    private javax.swing.JLabel Date1lb;
     private javax.swing.JTextField Date2Txt;
+    private javax.swing.JLabel Date2lb;
     private javax.swing.JPanel HallLayout;
+    private javax.swing.JTextField HallTxt;
+    private javax.swing.JLabel Hallb;
     private javax.swing.JButton LogOutBtn;
     private javax.swing.JPanel Menu;
     private javax.swing.JButton Rap1GoBtn;
@@ -333,10 +375,6 @@ public class Halls extends javax.swing.JFrame {
     private javax.swing.JPanel Report2;
     private javax.swing.JPanel RightPanelLayout;
     private javax.swing.JLabel UserLogged;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 
 }

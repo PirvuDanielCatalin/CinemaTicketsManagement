@@ -66,7 +66,7 @@ public class Start extends JFrame {
         PasswordLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         UserTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        UserTxt.setText("test");
+        UserTxt.setText("admin");
         UserTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 UserTxtActionPerformed(evt);
@@ -74,7 +74,7 @@ public class Start extends JFrame {
         });
 
         PasswordTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        PasswordTxt.setText("test");
+        PasswordTxt.setText("admin");
         PasswordTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 PasswordTxtActionPerformed(evt);
@@ -102,7 +102,6 @@ public class Start extends JFrame {
             }
         });
 
-        ClientCheck.setSelected(true);
         ClientCheck.setText("Client");
         ClientCheck.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ClientCheck.addActionListener(new java.awt.event.ActionListener() {
@@ -111,6 +110,7 @@ public class Start extends JFrame {
             }
         });
 
+        ManagerCheck.setSelected(true);
         ManagerCheck.setText("Manager");
         ManagerCheck.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ManagerCheck.addActionListener(new java.awt.event.ActionListener() {

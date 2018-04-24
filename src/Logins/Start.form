@@ -174,7 +174,7 @@
         <Component class="javax.swing.JTextField" name="UserTxt">
           <Properties>
             <Property name="horizontalAlignment" type="int" value="0"/>
-            <Property name="text" type="java.lang.String" value="test"/>
+            <Property name="text" type="java.lang.String" value="admin"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="UserTxtActionPerformed"/>
@@ -183,7 +183,7 @@
         <Component class="javax.swing.JPasswordField" name="PasswordTxt">
           <Properties>
             <Property name="horizontalAlignment" type="int" value="0"/>
-            <Property name="text" type="java.lang.String" value="test"/>
+            <Property name="text" type="java.lang.String" value="admin"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="PasswordTxtActionPerformed"/>
@@ -215,7 +215,6 @@
         </Component>
         <Component class="javax.swing.JRadioButton" name="ClientCheck">
           <Properties>
-            <Property name="selected" type="boolean" value="true"/>
             <Property name="text" type="java.lang.String" value="Client"/>
             <Property name="horizontalAlignment" type="int" value="0"/>
           </Properties>
@@ -225,6 +224,7 @@
         </Component>
         <Component class="javax.swing.JRadioButton" name="ManagerCheck">
           <Properties>
+            <Property name="selected" type="boolean" value="true"/>
             <Property name="text" type="java.lang.String" value="Manager"/>
             <Property name="horizontalAlignment" type="int" value="0"/>
           </Properties>
