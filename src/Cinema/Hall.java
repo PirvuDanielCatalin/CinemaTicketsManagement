@@ -62,10 +62,18 @@ public class Hall extends javax.swing.JFrame {
         for(int i=1;i<=maxnr;i++)
         {
             JButton J=new JButton(""+i);
-            J.setBackground(Color.GREEN);
+            //J.setBackground(Color.GREEN);
+            /*
+            * Culoare in functie de cum sunt in baza de date
+            * Green=Loc liber=Nu se afla in baza de date
+            * Red=Loc ocupat=Exista in baza de date
+            */
+            
             J.setVisible(true);
             ChairsPanel.add(J);
         }
+        
+        
                 
         /*
         HallLayout.setLayout(new GridLayout(6,5));

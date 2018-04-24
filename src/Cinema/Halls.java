@@ -35,7 +35,7 @@ public class Halls extends javax.swing.JFrame {
         
         User=new String(user);
         CM=_CM;
-        nmbr=60;
+        nmbr=60; // Se suprascrie cu un nr de scaune introdus de manager 
         
         String Logged="Hello "+user;
         if(CM==1)
@@ -62,7 +62,8 @@ public class Halls extends javax.swing.JFrame {
                 H.setVisible(true);
                 H.setResizable(false);
             });
-            J.setVisible(false);
+            /*Salile vizibile sunt cele existente in baza de date*/
+            //J.setVisible(false); //
             HallLayout.add(J);
         }
         
