@@ -3,6 +3,8 @@ package Logins;
 import Cinema.Halls;
 import javax.swing.*;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -316,11 +318,29 @@ public class Start extends JFrame {
         //</editor-fold>
 
         /* Create and display the form */
+        
         java.awt.EventQueue.invokeLater(() -> {
             Start JF = new Start();
             JF.setVisible(true);
             JF.setResizable(false);
         });
+        
+        /*
+        String s="15:41";
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
+        java.util.Date d1=null;
+            try 
+            {
+                d1=(java.util.Date) formatter.parse(s);
+            } 
+            catch (ParseException ex) 
+            {
+                ex.printStackTrace();
+            }
+            String formattedTime = formatter.format(d1);
+
+            System.out.println(formattedTime);
+        */
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

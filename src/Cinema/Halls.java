@@ -47,6 +47,7 @@ public class Halls extends javax.swing.JFrame {
         {
              Logged=Logged+" ( C )";
              RightPanelLayout.setVisible(false);
+             AddHallBtn.setVisible(false);
         }
            
         UserLogged.setText(Logged);
@@ -317,7 +318,7 @@ public class Halls extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void AddHallBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddHallBtnActionPerformed
-        HallInfo_CU HICU =new HallInfo_CU();
+        HallInfo_CU HICU =new HallInfo_CU(User);
         HICU.setVisible(true);
         HICU.setResizable(false);
         

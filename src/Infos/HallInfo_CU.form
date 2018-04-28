@@ -65,34 +65,31 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                              <Component id="FinalHour_Lbl" linkSize="1" pref="95" max="32767" attributes="0"/>
-                              <Component id="StartHour_Lbl" linkSize="1" max="32767" attributes="0"/>
-                              <Component id="Manager_ID_Lbl" linkSize="1" max="32767" attributes="0"/>
-                              <Component id="ChairNr_Lbl" linkSize="1" max="32767" attributes="0"/>
-                              <Component id="Name_Lbl" linkSize="1" max="32767" attributes="0"/>
-                              <Component id="ID_Lbl" linkSize="1" max="32767" attributes="0"/>
-                          </Group>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="Hall_Number_Txt" alignment="0" max="32767" attributes="0"/>
-                              <Component id="FinalHour_Txt" max="32767" attributes="0"/>
-                              <Component id="StartHour_Txt" max="32767" attributes="0"/>
-                              <Component id="ManagerID_Txt" max="32767" attributes="0"/>
-                              <Component id="Chairs_Txt" pref="318" max="32767" attributes="0"/>
-                              <Component id="Name_Txt" max="32767" attributes="0"/>
-                          </Group>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="81" max="-2" attributes="0"/>
-                          <Component id="Go" min="-2" pref="253" max="-2" attributes="0"/>
-                      </Group>
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                      <Component id="FinalHour_Lbl" linkSize="1" pref="95" max="32767" attributes="0"/>
+                      <Component id="StartHour_Lbl" linkSize="1" max="32767" attributes="0"/>
+                      <Component id="Manager_ID_Lbl" linkSize="1" max="32767" attributes="0"/>
+                      <Component id="ChairNr_Lbl" linkSize="1" max="32767" attributes="0"/>
+                      <Component id="Name_Lbl" linkSize="1" max="32767" attributes="0"/>
+                      <Component id="ID_Lbl" linkSize="1" max="32767" attributes="0"/>
+                  </Group>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="Hall_Number_Txt" alignment="0" max="32767" attributes="0"/>
+                      <Component id="FinalHour_Txt" max="32767" attributes="0"/>
+                      <Component id="StartHour_Txt" max="32767" attributes="0"/>
+                      <Component id="ManagerID_Txt" max="32767" attributes="0"/>
+                      <Component id="Chairs_Txt" pref="318" max="32767" attributes="0"/>
+                      <Component id="Name_Txt" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
+              </Group>
+              <Group type="102" alignment="1" attributes="0">
+                  <EmptySpace pref="102" max="32767" attributes="0"/>
+                  <Component id="Go" min="-2" pref="253" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="88" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -129,9 +126,9 @@
                       <Component id="FinalHour_Lbl" linkSize="2" max="32767" attributes="0"/>
                       <Component id="FinalHour_Txt" pref="44" max="32767" attributes="0"/>
                   </Group>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="Go" pref="31" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
+                  <Component id="Go" pref="31" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -227,6 +224,9 @@
           <Properties>
             <Property name="horizontalAlignment" type="int" value="0"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="StartHour_TxtActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="FinalHour_Txt">
           <Properties>
@@ -237,6 +237,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Go"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="GoActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

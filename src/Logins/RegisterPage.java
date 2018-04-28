@@ -244,7 +244,7 @@ public class RegisterPage extends javax.swing.JFrame {
                }
                else
                {
-                   JOptionPane.showMessageDialog(null,"Account already created","Login Error",JOptionPane.ERROR_MESSAGE);
+                   JOptionPane.showMessageDialog(null,"Account already created","Register Error",JOptionPane.ERROR_MESSAGE);
                }
            }
            catch (SQLException ex) 
@@ -257,7 +257,9 @@ public class RegisterPage extends javax.swing.JFrame {
        else
        {
           //JOptionPane.showMessageDialog(null,"("+count+","+UserTxt.getText()+","+PasswordTxt.getPassword()+","+ConfPasswordTxt.getPassword()+","+aux+")");
-            JOptionPane.showMessageDialog(null,"Invalid login details","Login Error",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null,"Invalid register details","Register Error",JOptionPane.ERROR_MESSAGE);
+            PasswordTxt.setText("");
+            ConfPasswordTxt.setText("");
        }
         Start JF=new Start();
         JF.setVisible(true);
