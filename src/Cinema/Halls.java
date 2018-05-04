@@ -1,14 +1,16 @@
 package Cinema;
 
 import Infos.HallInfo_CU;
+import Logins.Start;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
-
 
 public class Halls extends javax.swing.JFrame {
 
@@ -16,7 +18,8 @@ public class Halls extends javax.swing.JFrame {
     String User;
     int CM;
     int nmbr;
-    
+    HashMap<Integer, Integer> already;
+
     public void DatabaseConnect() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -29,49 +32,64 @@ public class Halls extends javax.swing.JFrame {
         }
     }
 
-    public Halls(String user,int _CM) {
+    public Halls(String user, int _CM) {
         DatabaseConnect();
         initComponents();
-        
-        User=new String(user);
-        CM=_CM;
-        nmbr=60; // Se suprascrie cu un nr de scaune introdus de manager 
-        
-        String Logged="Hello "+user;
-        if(CM==1)
-        {
-            Logged=Logged+" ( M )";
-            
-        }  
-        else
-        {
-             Logged=Logged+" ( C )";
-             RightPanelLayout.setVisible(false);
-             AddHallBtn.setVisible(false);
+
+        User = new String(user);
+        CM = _CM;
+        nmbr = 60; // Se suprascrie cu un nr de scaune introdus de manager 
+
+        String Logged = "Hello " + user;
+        if (CM == 1) {
+            Logged = Logged + " ( Manager )";
+        } else {
+            Logged = Logged + " ( Client )";
+            RightPanelLayout.setVisible(false);
+            AddHallBtn.setVisible(false);
         }
-           
+
         UserLogged.setText(Logged);
-        
-        HallLayout.setLayout(new GridLayout(6,5));
-        
-        for(int i=1;i<=30;i++)
+
+        HallLayout.setLayout(new GridLayout(6, 5));
+        already = new HashMap<>();
+        try {
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from halls");
+            while (rs.next()) {
+                already.put(rs.getInt("id"), rs.getInt("numberChairs"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Halls.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        for (int i = 1; i <= 30; i++) 
         {
-            JButton J=new JButton("S "+i);
-            J.addActionListener((ActionEvent e) -> 
+            
+            JButton J = new JButton("S " + i);
+            if (already.containsKey(i)) 
             {
-                Hall H=new Hall(user,_CM, ((JButton)e.getSource()).getText(),nmbr);
-                H.setVisible(true);
-                H.setResizable(false);
-            });
-            /*Salile vizibile sunt cele existente in baza de date*/
-            //J.setVisible(false); //
+                int val=already.get(i);
+                J.addActionListener((ActionEvent e)-> 
+                {
+                    Hall H = new Hall(user, _CM, ((JButton) e.getSource()).getText(),val);
+                    H.setVisible(true);
+                    H.setResizable(false);
+                });
+                J.setVisible(true);
+            }
+            else
+            {
+                J.addActionListener((ActionEvent e)-> 
+                {
+                    Hall H = new Hall(user, _CM, ((JButton) e.getSource()).getText(),60);
+                    H.setVisible(true);
+                    H.setResizable(false);
+                });
+                J.setVisible(false);
+            }
+
             HallLayout.add(J);
         }
-        
-        /* Verificarea in baza de date a ce sali sunt deja adaugate*/
-        
-        
-        
     }
 
     @SuppressWarnings("unchecked")
@@ -110,6 +128,11 @@ public class Halls extends javax.swing.JFrame {
         });
 
         LogOutBtn.setText("LogOut");
+        LogOutBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LogOutBtnActionPerformed(evt);
+            }
+        });
 
         UserLogged.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         UserLogged.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -318,11 +341,20 @@ public class Halls extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void AddHallBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddHallBtnActionPerformed
-        HallInfo_CU HICU =new HallInfo_CU(User);
+        HallInfo_CU HICU = new HallInfo_CU(User,CM);
         HICU.setVisible(true);
         HICU.setResizable(false);
-        
+        this.dispose();
+
     }//GEN-LAST:event_AddHallBtnActionPerformed
+
+    private void LogOutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogOutBtnActionPerformed
+        Start JF = new Start();
+        JF.setVisible(true);
+        JF.setResizable(false);
+        this.dispose();
+
+    }//GEN-LAST:event_LogOutBtnActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -348,10 +380,10 @@ public class Halls extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
-       // HallsLayout.setLayout(new GridLayout(6, 5));
-        
+        // HallsLayout.setLayout(new GridLayout(6, 5));
+
         /* Create and display the form */
-        /*java.awt.EventQueue.invokeLater(new Runnable() {
+ /*java.awt.EventQueue.invokeLater(new Runnable() {
         public void run() {
         new Halls().setVisible(true);
         }

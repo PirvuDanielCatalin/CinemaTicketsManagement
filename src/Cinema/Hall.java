@@ -1,10 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Cinema;
-
+import Logins.Start;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.sql.*;
@@ -12,10 +7,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
 
-/**
- *
- * @author Johannes
- */
 public class Hall extends javax.swing.JFrame {
 
     Connection con;
@@ -40,19 +31,17 @@ public class Hall extends javax.swing.JFrame {
         initComponents();
         User=new String(user);
         CM=_CM;
-        
-        
         maxnr=nmbr;
         
         String Logged="Hello "+user;
         if(CM==1)
         {
-            Logged=Logged+" ( M )";
+            Logged=Logged+" ( Manager )";
             
         }  
         else
         {
-             Logged=Logged+" ( C )";
+             Logged=Logged+" ( Client )";
              EditHallInfo.setVisible(false);
         }
            
@@ -72,27 +61,8 @@ public class Hall extends javax.swing.JFrame {
             J.setVisible(true);
             ChairsPanel.add(J);
         }
-        
-        
-                
-        /*
-        HallLayout.setLayout(new GridLayout(6,5));
-        for(int i=1;i<=30;i++)
-        {
-            JButton J=new JButton("S "+i);
-            J.addActionListener((ActionEvent e) -> 
-            {
-                Hall H=new Hall(user,_CM, ( (JButton)e.getSource() ).getText() );
-                H.setVisible(true);
-                H.setResizable(false);
-            });
-            J.setVisible(false);
-            HallLayout.add(J);
-        }
-        */
     }
 
-   
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -110,6 +80,11 @@ public class Hall extends javax.swing.JFrame {
         Menu.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
 
         LogOutBtn.setText("LogOut");
+        LogOutBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LogOutBtnActionPerformed(evt);
+            }
+        });
 
         UserLogged.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         UserLogged.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -183,6 +158,11 @@ public class Hall extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void LogOutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogOutBtnActionPerformed
+
+        this.dispose();    
+    }//GEN-LAST:event_LogOutBtnActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
