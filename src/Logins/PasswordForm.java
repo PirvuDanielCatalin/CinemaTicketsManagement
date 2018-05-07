@@ -1,5 +1,5 @@
-
 package Logins;
+
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -9,21 +9,21 @@ public class PasswordForm extends javax.swing.JFrame {
 
     public String User;
     Connection con;
-    public void DatabaseConnect()
-    {
+
+    public void DatabaseConnect() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             con = DriverManager.getConnection(
                     "jdbc:mysql://localhost:3306/cinemamanagement", //database name
-                    "root",                                         //user
+                    "root", //user
                     "");                                            //password 
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(PasswordForm.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public PasswordForm(String _User) 
-    {
-        User=new String(_User);
+
+    public PasswordForm(String _User) {
+        User = new String(_User);
         initComponents();
         DatabaseConnect();
     }
@@ -108,38 +108,31 @@ public class PasswordForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void CPasswordTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CPasswordTxtActionPerformed
-        
+
     }//GEN-LAST:event_CPasswordTxtActionPerformed
 
     private void goActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goActionPerformed
-        
-        String passw=new String(PasswordTxt.getPassword());
-        String cpassw=new String(CPasswordTxt.getPassword());
-        
-        if(passw.length()>0 && passw.equals(cpassw))
-        {
-            try 
-            {
-                Statement stmt=con.createStatement();
-                int updt=stmt.executeUpdate("update users set password='"+passw+"' where user='"+User+"'");
-            } 
-            catch (SQLException ex) 
-            {
+
+        String passw = new String(PasswordTxt.getPassword());
+        String cpassw = new String(CPasswordTxt.getPassword());
+
+        if (passw.length() > 0 && passw.equals(cpassw)) {
+            try {
+                Statement stmt = con.createStatement();
+                int updt = stmt.executeUpdate("update users set password='" + passw + "' where user='" + User + "'");
+            } catch (SQLException ex) {
                 Logger.getLogger(PasswordForm.class.getName()).log(Level.SEVERE, null, ex);
             }
-        Start JF=new Start();
-        JF.setVisible(true);
-        JF.setResizable(false);
-        this.dispose();
-        }
-        else
-        {
-            JOptionPane.showMessageDialog(null,"Invalid details","Password Error",JOptionPane.ERROR_MESSAGE);
+            Start JF = new Start();
+            JF.setVisible(true);
+            JF.setResizable(false);
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(null, "Invalid details", "Password Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_goActionPerformed
 
-    public static void main(String args[]) 
-    {
+    public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -164,7 +157,7 @@ public class PasswordForm extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        /* java.awt.EventQueue.invokeLater(new Runnable()
+ /* java.awt.EventQueue.invokeLater(new Runnable()
         {
         public void run() {
         new PasswordForm(args[1]).setVisible(true);

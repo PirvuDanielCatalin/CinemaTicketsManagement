@@ -9,13 +9,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
-public class HallInfo_CU extends javax.swing.JFrame {
+public class HallInfo_Create extends javax.swing.JFrame {
 
     String User;
     int CM;
     Connection con;
-   
-    
+
     public void DatabaseConnect() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -24,19 +23,19 @@ public class HallInfo_CU extends javax.swing.JFrame {
                     "root", //user
                     "");                                            //password 
         } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(HallInfo_CU.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(HallInfo_Create.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public HallInfo_CU(String _user,int _CM) {
+    public HallInfo_Create(String _user, int _CM) {
         DatabaseConnect();
         initComponents();
         User = new String(_user);
-        CM=_CM;
+        CM = _CM;
         ManagerID_Txt.setText(User);
         ManagerID_Txt.setEditable(false);
         FillComboBox();
-        
+
     }
 
     @SuppressWarnings("unchecked")
@@ -57,7 +56,7 @@ public class HallInfo_CU extends javax.swing.JFrame {
         FinalHour_Lbl = new javax.swing.JLabel();
         StartHour_Txt = new javax.swing.JTextField();
         FinalHour_Txt = new javax.swing.JTextField();
-        Go = new javax.swing.JButton();
+        CreateHallInfo = new javax.swing.JButton();
         MovieNameLbl = new javax.swing.JLabel();
         MovieNames = new javax.swing.JComboBox<>();
 
@@ -106,6 +105,7 @@ public class HallInfo_CU extends javax.swing.JFrame {
 
         FinalHour_Lbl.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         FinalHour_Lbl.setText("and");
+        FinalHour_Lbl.setToolTipText("");
         FinalHour_Lbl.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         StartHour_Txt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -119,10 +119,10 @@ public class HallInfo_CU extends javax.swing.JFrame {
         FinalHour_Txt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         FinalHour_Txt.setText("21:00");
 
-        Go.setText("Go");
-        Go.addActionListener(new java.awt.event.ActionListener() {
+        CreateHallInfo.setText("Go");
+        CreateHallInfo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                GoActionPerformed(evt);
+                CreateHallInfoActionPerformed(evt);
             }
         });
 
@@ -135,38 +135,37 @@ public class HallInfo_CU extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(Name_Lbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(ID_Lbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(Manager_ID_Lbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(StartHour_Lbl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(FinalHour_Lbl, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE))
+                            .addComponent(ChairNr_Lbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(FinalHour_Txt, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Chairs_Txt, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(StartHour_Txt, javax.swing.GroupLayout.DEFAULT_SIZE, 361, Short.MAX_VALUE)
+                                .addComponent(ManagerID_Txt))
+                            .addComponent(Name_Txt, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Hall_Number_Txt, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(MovieNameLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(MovieNames, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                            .addComponent(ChairNr_Lbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(Name_Lbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(ID_Lbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                        .addComponent(Manager_ID_Lbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(StartHour_Lbl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addComponent(FinalHour_Lbl, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(FinalHour_Txt, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(Chairs_Txt, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(StartHour_Txt, javax.swing.GroupLayout.DEFAULT_SIZE, 361, Short.MAX_VALUE)
-                                        .addComponent(ManagerID_Txt))
-                                    .addComponent(Name_Txt, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(Hall_Number_Txt, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(141, 141, 141)
-                                .addComponent(Go, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addComponent(CreateHallInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(MovieNames, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
 
@@ -203,8 +202,8 @@ public class HallInfo_CU extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(MovieNameLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(MovieNames, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
-                .addComponent(Go, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addComponent(CreateHallInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -229,30 +228,25 @@ public class HallInfo_CU extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void FillComboBox()
-    {
-        try 
-        {
-            Statement stmt=con.createStatement();
-            ResultSet rs=stmt.executeQuery("Select * from movies");
-            while(rs.next())
-            {
-                String name=rs.getString("name");
-               MovieNames.addItem(name);
+    private void FillComboBox() {
+        try {
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("Select * from movies");
+            while (rs.next()) {
+                String name = rs.getString("name");
+                MovieNames.addItem(name);
             }
-        } 
-        catch (SQLException ex) 
-        {
-            Logger.getLogger(HallInfo_CU.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(HallInfo_Create.class.getName()).log(Level.SEVERE, null, ex);
         }
-         
+
     }
-    
-    private void GoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GoActionPerformed
+
+    private void CreateHallInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateHallInfoActionPerformed
 
         // Validarea tipurilor de date
         String S = Name_Txt.getText();
-        String T=(String) MovieNames.getSelectedItem();
+        String T = (String) MovieNames.getSelectedItem();
 
         int nr = 0;
         int nrc = 0;
@@ -290,52 +284,42 @@ public class HallInfo_CU extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Wrong Time Information");
         }
 
-        if (S.equals("") || nr == 0 || nrc == 0 || ok == 0) 
-        {
+        if (S.equals("") || nr == 0 || nrc == 0 || ok == 0) {
             this.dispose();
-            HallInfo_CU HICU = new HallInfo_CU(User,CM );
+            HallInfo_Create HICU = new HallInfo_Create(User, CM);
             HICU.setVisible(true);
             HICU.setResizable(false);
-            
+
             /*
             Name_Txt.setText("");
             Hall_Number_Txt.setText("");
             Chairs_Txt.setText("");
             StartHour_Txt.setText("");
             FinalHour_Txt.setText("");
-            */
-            
-        }
-        else
-        {
+             */
+        } else {
             // Validarea existentei in baza de date
             ResultSet rs = null;
-            try 
-            {
+            try {
                 Statement isAlready = con.createStatement();
-                rs = isAlready.executeQuery("select id from halls where id=" +nr);
-                if (!rs.next()) 
-                {
-                    String aux1=formatter.format(d1);
-                    String aux2=formatter.format(d2);
+                rs = isAlready.executeQuery("select id from halls where id=" + nr);
+                if (!rs.next()) {
+                    String aux1 = formatter.format(d1);
+                    String aux2 = formatter.format(d2);
                     int confExecUpdate = isAlready.executeUpdate(
-                            "INSERT INTO halls values ("+nr+",'"+S+"',"+nrc+",'"+User+"','"+aux1+"','"+aux2+"','"+T+"')");
+                            "INSERT INTO halls values (" + nr + ",'" + S + "'," + nrc + ",'" + User + "','" + aux1 + "','" + aux2 + "','" + T + "')");
                     this.dispose();
-                    Halls HS = new Halls(User,CM);
+                    Halls HS = new Halls(User, CM);
                     HS.setVisible(true);
                     HS.setResizable(false);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Hall already created");
                 }
-                else
-                {
-                     JOptionPane.showMessageDialog(null,"Hall already created");
-                }
-            } 
-            catch (SQLException ex) 
-            {
-                Logger.getLogger(HallInfo_CU.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(HallInfo_Create.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } 
-    }//GEN-LAST:event_GoActionPerformed
+        }
+    }//GEN-LAST:event_CreateHallInfoActionPerformed
 
     private void StartHour_TxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StartHour_TxtActionPerformed
         // TODO add your handling code here:
@@ -359,14 +343,23 @@ public class HallInfo_CU extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(HallInfo_CU.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(HallInfo_Create.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(HallInfo_CU.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(HallInfo_Create.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(HallInfo_CU.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(HallInfo_Create.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(HallInfo_CU.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(HallInfo_Create.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+
+        /* Create and display the form */
+ /*
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new HallInfo_CU().setVisible(true);
+            }
+        });
         //</editor-fold>
 
         /* Create and display the form */
@@ -382,9 +375,9 @@ public class HallInfo_CU extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel ChairNr_Lbl;
     private javax.swing.JTextField Chairs_Txt;
+    private javax.swing.JButton CreateHallInfo;
     private javax.swing.JLabel FinalHour_Lbl;
     private javax.swing.JTextField FinalHour_Txt;
-    private javax.swing.JButton Go;
     private javax.swing.JLabel HallTitle;
     private javax.swing.JTextField Hall_Number_Txt;
     private javax.swing.JLabel ID_Lbl;

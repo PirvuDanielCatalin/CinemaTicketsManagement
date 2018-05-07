@@ -66,47 +66,46 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="MovieNameLbl" min="-2" pref="95" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="MovieNames" max="32767" attributes="0"/>
-                      </Group>
                       <Group type="102" attributes="0">
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                          <Component id="Name_Lbl" linkSize="1" max="32767" attributes="0"/>
+                                          <Component id="ID_Lbl" linkSize="1" max="32767" attributes="0"/>
+                                      </Group>
+                                      <Component id="Manager_ID_Lbl" linkSize="1" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="StartHour_Lbl" linkSize="1" alignment="1" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Component id="FinalHour_Lbl" linkSize="1" alignment="0" pref="95" max="32767" attributes="0"/>
+                              </Group>
+                              <Component id="ChairNr_Lbl" linkSize="1" max="32767" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" attributes="0">
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                              <Component id="ChairNr_Lbl" linkSize="1" max="32767" attributes="0"/>
-                                              <Component id="Name_Lbl" linkSize="1" max="32767" attributes="0"/>
-                                              <Component id="ID_Lbl" linkSize="1" max="32767" attributes="0"/>
-                                          </Group>
-                                          <Component id="Manager_ID_Lbl" linkSize="1" alignment="0" max="32767" attributes="0"/>
-                                          <Component id="StartHour_Lbl" linkSize="1" alignment="1" max="32767" attributes="0"/>
-                                      </Group>
-                                      <Component id="FinalHour_Lbl" linkSize="1" alignment="0" pref="95" max="32767" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="FinalHour_Txt" alignment="1" min="-2" pref="361" max="-2" attributes="0"/>
-                                      <Component id="Chairs_Txt" alignment="0" min="-2" pref="361" max="-2" attributes="0"/>
-                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                          <Component id="StartHour_Txt" pref="361" max="32767" attributes="0"/>
-                                          <Component id="ManagerID_Txt" max="32767" attributes="0"/>
-                                      </Group>
-                                      <Component id="Name_Txt" min="-2" pref="361" max="-2" attributes="0"/>
-                                      <Component id="Hall_Number_Txt" alignment="0" min="-2" pref="361" max="-2" attributes="0"/>
-                                  </Group>
+                              <Component id="FinalHour_Txt" alignment="1" min="-2" pref="361" max="-2" attributes="0"/>
+                              <Component id="Chairs_Txt" alignment="0" min="-2" pref="361" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="StartHour_Txt" pref="361" max="32767" attributes="0"/>
+                                  <Component id="ManagerID_Txt" max="32767" attributes="0"/>
                               </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="-2" pref="141" max="-2" attributes="0"/>
-                                  <Component id="Go" min="-2" pref="204" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="Name_Txt" min="-2" pref="361" max="-2" attributes="0"/>
+                              <Component id="Hall_Number_Txt" alignment="0" min="-2" pref="361" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="MovieNameLbl" min="-2" pref="95" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <Component id="CreateHallInfo" min="-2" pref="274" max="-2" attributes="0"/>
+                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              </Group>
+                              <Component id="MovieNames" max="32767" attributes="0"/>
+                          </Group>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -151,8 +150,8 @@
                       <Component id="MovieNameLbl" max="32767" attributes="0"/>
                       <Component id="MovieNames" pref="41" max="32767" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="41" max="32767" attributes="0"/>
-                  <Component id="Go" min="-2" pref="37" max="-2" attributes="0"/>
+                  <EmptySpace pref="28" max="32767" attributes="0"/>
+                  <Component id="CreateHallInfo" min="-2" pref="50" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -241,6 +240,7 @@
           <Properties>
             <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="text" type="java.lang.String" value="and"/>
+            <Property name="toolTipText" type="java.lang.String" value=""/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
                 <LineBorder/>
@@ -263,12 +263,12 @@
             <Property name="text" type="java.lang.String" value="21:00"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="Go">
+        <Component class="javax.swing.JButton" name="CreateHallInfo">
           <Properties>
             <Property name="text" type="java.lang.String" value="Go"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="GoActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="CreateHallInfoActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="MovieNameLbl">

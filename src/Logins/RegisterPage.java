@@ -1,28 +1,28 @@
-
 package Logins;
+
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import Logins.Start;
 
 public class RegisterPage extends javax.swing.JFrame {
 
     Connection con;
-    public void DatabaseConnect()
-    {
+
+    public void DatabaseConnect() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             con = DriverManager.getConnection(
                     "jdbc:mysql://localhost:3306/cinemamanagement", //database name
-                    "root",                                         //user
+                    "root", //user
                     "");                                            //password 
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(RegisterPage.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     public RegisterPage() {
-       
+
         initComponents();
         DatabaseConnect();
     }
@@ -206,70 +206,57 @@ public class RegisterPage extends javax.swing.JFrame {
     }//GEN-LAST:event_UserTxtActionPerformed
 
     private void RegisterBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegisterBtnActionPerformed
-        
-       int aux=(ManagerCheck.isSelected())?1:0;
-       String passw=new String(PasswordTxt.getPassword());
-       String cpassw=new String(ConfPasswordTxt.getPassword());
-       //JOptionPane.showMessageDialog(null,"("+count+","+UserTxt.getText()+","+passw+","+cpassw+","+aux+")");
-        if(passw.length()>0 && UserTxt.getText().length()>0 && passw.equals(cpassw))
-       {
-           ResultSet rs=null;
-           try {
-               Statement isAlready=con.createStatement();
-               rs = isAlready.executeQuery(
-                       "select user,password "
-                     + "from users "
-                     + "where user='"+UserTxt.getText()+"' and password='"+passw+"'");
-             
+
+        int aux = (ManagerCheck.isSelected()) ? 1 : 0;
+        String passw = new String(PasswordTxt.getPassword());
+        String cpassw = new String(ConfPasswordTxt.getPassword());
+        //JOptionPane.showMessageDialog(null,"("+count+","+UserTxt.getText()+","+passw+","+cpassw+","+aux+")");
+        if (passw.length() > 0 && UserTxt.getText().length() > 0 && passw.equals(cpassw)) {
+            ResultSet rs = null;
+            try {
+                Statement isAlready = con.createStatement();
+                rs = isAlready.executeQuery(
+                        "select user,password "
+                        + "from users "
+                        + "where user='" + UserTxt.getText() + "' and password='" + passw + "'");
+
             } catch (SQLException ex) {
-               Logger.getLogger(RegisterPage.class.getName()).log(Level.SEVERE, null, ex);
-           }   
-              
-           try 
-           {
-               if(!rs.next())
-               {
-                   try 
-                   {
-                       Statement RegIn = con.createStatement();
-                       int confExecUpdate = RegIn.executeUpdate(
-                               "INSERT INTO users (user,password,isManager) values "
-                                       +"('"+UserTxt.getText()+"','"+passw+"',"+aux+")");
-                       
-                   } 
-                   catch (SQLException ex) 
-                   {
-                       Logger.getLogger(RegisterPage.class.getName()).log(Level.SEVERE, null, ex);
-                   }
-               }
-               else
-               {
-                   JOptionPane.showMessageDialog(null,"Account already created","Register Error",JOptionPane.ERROR_MESSAGE);
-               }
-           }
-           catch (SQLException ex) 
-           {
-               Logger.getLogger(RegisterPage.class.getName()).log(Level.SEVERE, null, ex);
-           }
-           
-       
-       }
-       else
-       {
-          //JOptionPane.showMessageDialog(null,"("+count+","+UserTxt.getText()+","+PasswordTxt.getPassword()+","+ConfPasswordTxt.getPassword()+","+aux+")");
-            JOptionPane.showMessageDialog(null,"Invalid register details","Register Error",JOptionPane.ERROR_MESSAGE);
+                Logger.getLogger(RegisterPage.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            try {
+                if (!rs.next()) {
+                    try {
+                        Statement RegIn = con.createStatement();
+                        int confExecUpdate = RegIn.executeUpdate(
+                                "INSERT INTO users (user,password,isManager) values "
+                                + "('" + UserTxt.getText() + "','" + passw + "'," + aux + ")");
+
+                    } catch (SQLException ex) {
+                        Logger.getLogger(RegisterPage.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Account already created", "Register Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(RegisterPage.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        } else {
+            //JOptionPane.showMessageDialog(null,"("+count+","+UserTxt.getText()+","+PasswordTxt.getPassword()+","+ConfPasswordTxt.getPassword()+","+aux+")");
+            JOptionPane.showMessageDialog(null, "Invalid register details", "Register Error", JOptionPane.ERROR_MESSAGE);
             PasswordTxt.setText("");
             ConfPasswordTxt.setText("");
-       }
-        Start JF=new Start();
+        }
+        Start JF = new Start();
         JF.setVisible(true);
         JF.setResizable(false);
         this.dispose();
-        
+
     }//GEN-LAST:event_RegisterBtnActionPerformed
 
     private void ClientCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ClientCheckActionPerformed
-        
+
         ManagerCheck.setSelected(false);
     }//GEN-LAST:event_ClientCheckActionPerformed
 

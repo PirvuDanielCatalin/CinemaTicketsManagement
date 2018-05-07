@@ -1,4 +1,5 @@
 package Logins;
+
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -7,6 +8,7 @@ import javax.swing.JOptionPane;
 public class UserForm extends javax.swing.JFrame {
 
     Connection con;
+
     public void DatabaseConnect() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -28,7 +30,7 @@ public class UserForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        UserLbl = new javax.swing.JLabel();
         UserTxt = new javax.swing.JTextField();
         go = new javax.swing.JButton();
 
@@ -40,9 +42,9 @@ public class UserForm extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("User");
-        jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        UserLbl.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        UserLbl.setText("User");
+        UserLbl.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         UserTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
@@ -61,7 +63,7 @@ public class UserForm extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(UserTxt)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(UserLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGap(64, 64, 64)
@@ -72,7 +74,7 @@ public class UserForm extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(UserLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(UserTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -89,44 +91,34 @@ public class UserForm extends javax.swing.JFrame {
 
     private void goActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goActionPerformed
 
-        if (UserTxt.getText().length() > 0) 
-        {
-            try 
-            {
-                ResultSet rs=null;
-                
+        if (UserTxt.getText().length() > 0) {
+            try {
+                ResultSet rs = null;
+
                 Statement stmt = con.createStatement();
-                rs = stmt.executeQuery("select * from users where user='"+UserTxt.getText()+"'");
-                
-                if(rs.first())
-                {
+                rs = stmt.executeQuery("select * from users where user='" + UserTxt.getText() + "'");
+
+                if (rs.first()) {
                     PasswordForm PF = new PasswordForm(UserTxt.getText());
                     PF.setVisible(true);
-                    PF.setLocation(700,200);
+                    PF.setLocation(700, 200);
                     this.dispose();
-                    
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "Invalid details", "User Error", JOptionPane.ERROR_MESSAGE);
                 }
-                else
-                {
-                    JOptionPane.showMessageDialog(null,"Invalid details","User Error",JOptionPane.ERROR_MESSAGE);
-                }
-            } 
-            catch (SQLException ex) 
-            {
+            } catch (SQLException ex) {
                 Logger.getLogger(UserForm.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-        } 
-        else 
-        {
+
+        } else {
             JOptionPane.showMessageDialog(null, "Invalid user", "Login Error", JOptionPane.ERROR_MESSAGE);
         }
 
 
     }//GEN-LAST:event_goActionPerformed
 
-    public static void main(String args[]) 
-    {
+    public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -151,7 +143,7 @@ public class UserForm extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        /* java.awt.EventQueue.invokeLater(new Runnable() {
+ /* java.awt.EventQueue.invokeLater(new Runnable() {
         public void run() {
         new UserForm().setVisible(true);
         }
@@ -159,8 +151,8 @@ public class UserForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel UserLbl;
     private javax.swing.JTextField UserTxt;
     private javax.swing.JButton go;
-    private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }

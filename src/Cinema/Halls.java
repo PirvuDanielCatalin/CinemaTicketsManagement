@@ -1,13 +1,11 @@
 package Cinema;
 
-import Infos.HallInfo_CU;
+import Infos.HallInfo_Create;
 import Logins.Start;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.sql.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -18,7 +16,7 @@ public class Halls extends javax.swing.JFrame {
     String User;
     int CM;
     int nmbr;
-    HashMap<Integer, Integer> already;
+    ArrayList<Integer> already;
 
     public void DatabaseConnect() {
         try {
@@ -52,36 +50,32 @@ public class Halls extends javax.swing.JFrame {
         UserLogged.setText(Logged);
 
         HallLayout.setLayout(new GridLayout(6, 5));
-        already = new HashMap<>();
+
+        already = new ArrayList<>();
         try {
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from halls");
             while (rs.next()) {
-                already.put(rs.getInt("id"), rs.getInt("numberChairs"));
+                already.add(rs.getInt("id"));
             }
         } catch (SQLException ex) {
             Logger.getLogger(Halls.class.getName()).log(Level.SEVERE, null, ex);
         }
-        for (int i = 1; i <= 30; i++) 
-        {
-            
+        for (int i = 1; i <= 30; i++) {
+
             JButton J = new JButton("S " + i);
-            if (already.containsKey(i)) 
-            {
-                int val=already.get(i);
-                J.addActionListener((ActionEvent e)-> 
-                {
-                    Hall H = new Hall(user, _CM, ((JButton) e.getSource()).getText(),val);
+            if (already.contains(i)) {
+                J.addActionListener((ActionEvent e)
+                        -> {
+                    Hall H = new Hall(User, CM, ((JButton) e.getSource()).getText());
                     H.setVisible(true);
                     H.setResizable(false);
                 });
                 J.setVisible(true);
-            }
-            else
-            {
-                J.addActionListener((ActionEvent e)-> 
-                {
-                    Hall H = new Hall(user, _CM, ((JButton) e.getSource()).getText(),60);
+            } else {
+                J.addActionListener((ActionEvent e)
+                        -> {
+                    Hall H = new Hall(User, CM, ((JButton) e.getSource()).getText());
                     H.setVisible(true);
                     H.setResizable(false);
                 });
@@ -341,7 +335,7 @@ public class Halls extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void AddHallBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddHallBtnActionPerformed
-        HallInfo_CU HICU = new HallInfo_CU(User,CM);
+        HallInfo_Create HICU = new HallInfo_Create(User, CM);
         HICU.setVisible(true);
         HICU.setResizable(false);
         this.dispose();

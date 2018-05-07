@@ -1,8 +1,13 @@
 package Cinema;
-import Logins.Start;
+
+import Infos.HallInfo_Update;
+import Infos.TicketInfo_Create;
+import Infos.TicketInfo_ReadUpdateDelete;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -12,8 +17,9 @@ public class Hall extends javax.swing.JFrame {
     Connection con;
     String User;
     int CM;
-    int maxnr;
-    
+    int maxnr = 60;
+    ArrayList<Integer> occupied;
+
     public void DatabaseConnect() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -25,39 +31,78 @@ public class Hall extends javax.swing.JFrame {
             Logger.getLogger(Hall.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public Hall(String user,int _CM,String Name,int nmbr) 
-    {
+
+    public Hall(String user, int _CM, String hallID) {
         DatabaseConnect();
         initComponents();
-        User=new String(user);
-        CM=_CM;
-        maxnr=nmbr;
-        
-        String Logged="Hello "+user;
-        if(CM==1)
-        {
-            Logged=Logged+" ( Manager )";
-            
-        }  
-        else
-        {
-             Logged=Logged+" ( Client )";
-             EditHallInfo.setVisible(false);
+        User = new String(user);
+        CM = _CM;
+        int hall_ID = Integer.parseInt(hallID.substring(2));
+        try {
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select numberChairs from halls where id=" + hall_ID);
+            while (rs.next()) {
+                maxnr = rs.getInt("numberChairs");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Hall.class.getName()).log(Level.SEVERE, null, ex);
         }
-           
+
+        String Logged = "Hello " + user;
+        if (CM == 1) {
+            Logged = Logged + " ( Manager )";
+
+        } else {
+            Logged = Logged + " ( Client )";
+            EditHallInfo.setVisible(false);
+        }
+
         UserLogged.setText(Logged);
-        HallAccesed.setText(Name);
-        ChairsPanel.setLayout(new GridLayout(5,12));
-        for(int i=1;i<=maxnr;i++)
-        {
-            JButton J=new JButton(""+i);
-            //J.setBackground(Color.GREEN);
-            /*
-            * Culoare in functie de cum sunt in baza de date
-            * Green=Loc liber=Nu se afla in baza de date
-            * Red=Loc ocupat=Exista in baza de date
-            */
-            
+        HallAccesed.setText(hallID);
+
+        occupied = new ArrayList<>();
+
+        try {
+            Statement stmt = con.createStatement();
+            String SQL = "select * from ticket";
+            ResultSet rs = stmt.executeQuery(SQL);
+            while (rs.next()) {
+                occupied.add(rs.getInt("chairNumber"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Hall.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        ChairsPanel.setLayout(new GridLayout(5, 12));
+        for (int i = 1; i <= maxnr; i++) {
+            JButton J = new JButton("" + i);
+            //CM=1 =>manager
+            //CM=0 =>client
+            if (!occupied.contains(i)) //Daca nu este in BD => Loc liber
+            {
+                J.setBackground(Color.GREEN);
+                if (CM == 1) {
+                    J.addActionListener((ActionEvent e)
+                            -> {
+                        this.dispose();
+                        TicketInfo_Create TIC = new TicketInfo_Create(User, CM, hallID, ((JButton) e.getSource()).getText());
+                        TIC.setResizable(false);
+                        TIC.setVisible(true);
+                    });
+                }
+            } else {
+                J.setBackground(Color.RED);
+                if (CM == 1) {
+                    J.addActionListener((ActionEvent e)
+                            -> {
+                        this.dispose();
+                        TicketInfo_ReadUpdateDelete TIRUD = new TicketInfo_ReadUpdateDelete(User, CM, hallID);
+                        TIRUD.setResizable(false);
+                        TIRUD.setVisible(true);
+                    });
+                }
+            }
+
             J.setVisible(true);
             ChairsPanel.add(J);
         }
@@ -93,6 +138,11 @@ public class Hall extends javax.swing.JFrame {
         HallAccesed.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         EditHallInfo.setText("Edit");
+        EditHallInfo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EditHallInfoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout MenuLayout = new javax.swing.GroupLayout(Menu);
         Menu.setLayout(MenuLayout);
@@ -161,8 +211,19 @@ public class Hall extends javax.swing.JFrame {
 
     private void LogOutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogOutBtnActionPerformed
 
-        this.dispose();    
+        this.dispose();
     }//GEN-LAST:event_LogOutBtnActionPerformed
+
+    private void EditHallInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditHallInfoActionPerformed
+
+        int sala = Integer.parseInt(HallAccesed.getText().substring(2));
+
+        this.dispose();
+        HallInfo_Update HIU = new HallInfo_Update(User, CM, sala);
+        HIU.setVisible(true);
+        HIU.setResizable(false);
+
+    }//GEN-LAST:event_EditHallInfoActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -189,7 +250,7 @@ public class Hall extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        /*java.awt.EventQueue.invokeLater(new Runnable() {
+ /*java.awt.EventQueue.invokeLater(new Runnable() {
         public void run() {
         new Hall().setVisible(true);
         }

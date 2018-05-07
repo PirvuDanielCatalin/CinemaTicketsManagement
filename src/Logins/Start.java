@@ -3,8 +3,6 @@ package Logins;
 import Cinema.Halls;
 import javax.swing.*;
 import java.sql.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -229,35 +227,29 @@ public class Start extends JFrame {
         String User = UserTxt.getText();
         String Password = new String(PasswordTxt.getPassword());
         int Expectation = (ManagerCheck.isSelected()) ? 1 : 0;
-        int Reality=0;
-        if (Password.length() > 0 && UserTxt.getText().length() > 0) 
-        {
+        int Reality = 0;
+        if (Password.length() > 0 && UserTxt.getText().length() > 0) {
             ResultSet rs = null;
-            try 
-            {
+            try {
                 Statement isAlready = con.createStatement();
                 rs = isAlready.executeQuery(
-                          "select * "
+                        "select * "
                         + "from users "
                         + "where user='" + User + "' and password='" + Password + "'");
-                Reality=(rs.first())?rs.getInt(4):0;
-                if (rs.first() && Expectation==Reality) {
-                    Halls HS = new Halls(User,Reality);
+                Reality = (rs.first()) ? rs.getInt(4) : 0;
+                if (rs.first() && Expectation == Reality) {
+                    Halls HS = new Halls(User, Reality);
                     HS.setVisible(true);
                     HS.setResizable(false);
                     this.dispose();
                 } else {
                     JOptionPane.showMessageDialog(null, "Invalid login details", "Login Error", JOptionPane.ERROR_MESSAGE);
                 }
-            } 
-            catch (SQLException ex) 
-            {
+            } catch (SQLException ex) {
                 Logger.getLogger(RegisterPage.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-        } 
-        else 
-        {
+        } else {
 
             JOptionPane.showMessageDialog(null, "Invalid login details", "Login Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -318,13 +310,12 @@ public class Start extends JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        
         java.awt.EventQueue.invokeLater(() -> {
             Start JF = new Start();
             JF.setVisible(true);
             JF.setResizable(false);
         });
-        
+
         /*
         String s="15:41";
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
@@ -340,7 +331,7 @@ public class Start extends JFrame {
             String formattedTime = formatter.format(d1);
 
             System.out.println(formattedTime);
-        */
+         */
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
