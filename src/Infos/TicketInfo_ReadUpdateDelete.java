@@ -1,9 +1,75 @@
 package Infos;
 
+import Cinema.Hall;
+import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class TicketInfo_ReadUpdateDelete extends javax.swing.JFrame {
 
-    public TicketInfo_ReadUpdateDelete(String user, int _CM, String hallID) {
+    Connection con;
+    String User;
+    int CM;
+    String hallNr;
+    int hall_ID;
+    int seat_NR;
+
+    public void DatabaseConnect() {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/cinemamanagement", //database name
+                    "root", //user
+                    "");                                            //password 
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(TicketInfo_ReadUpdateDelete.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public TicketInfo_ReadUpdateDelete(String user, int _CM, String hallID, String seat) {
         initComponents();
+        DatabaseConnect();
+        User = new String(user);
+        CM = _CM;
+        hallNr = hallID;
+
+        hall_ID = Integer.parseInt(hallID.substring(2));
+        seat_NR = Integer.parseInt(seat);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
+        java.util.Date d = new java.util.Date();
+
+        SimpleDateFormat sold = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        java.util.Date e = new java.util.Date();
+
+        String Name = new String();
+
+        try {
+            Statement stmt = con.createStatement();
+            String SQL = "SELECT * "
+                    + "FROM ticket t "
+                    + "WHERE t.chairNumber=" + seat_NR;
+            ResultSet rs = stmt.executeQuery(SQL);
+            while (rs.next()) {
+                d = rs.getTime("MovieStartHour");
+                e = rs.getTimestamp("SellingHour");
+                Name = rs.getString("clientName");
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(TicketInfo_Create.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        HallTxt.setText(hall_ID + "");
+        HallTxt.setEditable(false);
+        SeatTxt.setText(seat);
+        SeatTxt.setEditable(false);
+        MovieStartHourTxt.setText(formatter.format(d));
+        MovieStartHourTxt.setEditable(false);
+        ClientNameTxt.setText(Name);
+        SellingTimeTxt.setText(sold.format(e));
+        SellingTimeTxt.setEditable(false);
     }
 
     @SuppressWarnings("unchecked")
@@ -16,12 +82,12 @@ public class TicketInfo_ReadUpdateDelete extends javax.swing.JFrame {
         Client_Name_Lbl = new javax.swing.JLabel();
         Seat_Lbl = new javax.swing.JLabel();
         MovieStartHour_Lbl = new javax.swing.JLabel();
-        SellingHour_Lbl = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
+        SellingTime_Lbl = new javax.swing.JLabel();
+        HallTxt = new javax.swing.JTextField();
+        ClientNameTxt = new javax.swing.JTextField();
+        SeatTxt = new javax.swing.JTextField();
+        MovieStartHourTxt = new javax.swing.JTextField();
+        SellingTimeTxt = new javax.swing.JTextField();
         UpdateBtn = new javax.swing.JButton();
         DeleteTBtn = new javax.swing.JButton();
 
@@ -50,19 +116,19 @@ public class TicketInfo_ReadUpdateDelete extends javax.swing.JFrame {
         MovieStartHour_Lbl.setText("MovieStartHour");
         MovieStartHour_Lbl.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        SellingHour_Lbl.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        SellingHour_Lbl.setText("SellingHour");
-        SellingHour_Lbl.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        SellingTime_Lbl.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        SellingTime_Lbl.setText("SellingTime");
+        SellingTime_Lbl.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        HallTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-        jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        ClientNameTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-        jTextField3.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        SeatTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-        jTextField4.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        MovieStartHourTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-        jTextField5.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        SellingTimeTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -71,18 +137,18 @@ public class TicketInfo_ReadUpdateDelete extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(SellingHour_Lbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(SellingTime_Lbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(MovieStartHour_Lbl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
                     .addComponent(Seat_Lbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(Hall_Lbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(Client_Name_Lbl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
-                    .addComponent(jTextField2)
-                    .addComponent(jTextField3)
-                    .addComponent(jTextField4)
-                    .addComponent(jTextField5))
+                    .addComponent(HallTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+                    .addComponent(ClientNameTxt)
+                    .addComponent(SeatTxt)
+                    .addComponent(MovieStartHourTxt)
+                    .addComponent(SellingTimeTxt))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -90,30 +156,35 @@ public class TicketInfo_ReadUpdateDelete extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField1)
+                    .addComponent(HallTxt)
                     .addComponent(Hall_Lbl, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField2)
+                    .addComponent(ClientNameTxt)
                     .addComponent(Client_Name_Lbl, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField3)
+                    .addComponent(SeatTxt)
                     .addComponent(Seat_Lbl, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField4)
+                    .addComponent(MovieStartHourTxt)
                     .addComponent(MovieStartHour_Lbl, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(SellingHour_Lbl, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
-                    .addComponent(jTextField5))
+                    .addComponent(SellingTime_Lbl, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
+                    .addComponent(SellingTimeTxt))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {Client_Name_Lbl, Hall_Lbl, MovieStartHour_Lbl, Seat_Lbl, SellingHour_Lbl});
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {Client_Name_Lbl, Hall_Lbl, MovieStartHour_Lbl, Seat_Lbl, SellingTime_Lbl});
 
         UpdateBtn.setText("Update");
+        UpdateBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                UpdateBtnActionPerformed(evt);
+            }
+        });
 
         DeleteTBtn.setText("Delete");
         DeleteTBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -152,8 +223,36 @@ public class TicketInfo_ReadUpdateDelete extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void DeleteTBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteTBtnActionPerformed
-        // TODO add your handling code here:
+
+        try {
+            Statement stmt = con.createStatement();
+            String SQL = "DELETE from ticket where chairNumber=" + seat_NR;
+            int deleteResult = stmt.executeUpdate(SQL);
+
+            this.dispose();
+            Hall H = new Hall(User, CM, hallNr);
+            H.setVisible(true);
+            H.setResizable(false);
+        } catch (SQLException ex) {
+            Logger.getLogger(TicketInfo_ReadUpdateDelete.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_DeleteTBtnActionPerformed
+
+    private void UpdateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UpdateBtnActionPerformed
+
+        try {
+            Statement stmt = con.createStatement();
+            String SQL = "UPDATE ticket set clientName='" + ClientNameTxt.getText() + "' where chairNumber=" + seat_NR;
+            int deleteResult = stmt.executeUpdate(SQL);
+
+            this.dispose();
+            Hall H = new Hall(User, CM, hallNr);
+            H.setVisible(true);
+            H.setResizable(false);
+        } catch (SQLException ex) {
+            Logger.getLogger(TicketInfo_ReadUpdateDelete.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_UpdateBtnActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -195,19 +294,19 @@ public class TicketInfo_ReadUpdateDelete extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField ClientNameTxt;
     private javax.swing.JLabel Client_Name_Lbl;
     private javax.swing.JButton DeleteTBtn;
+    private javax.swing.JTextField HallTxt;
     private javax.swing.JLabel Hall_Lbl;
+    private javax.swing.JTextField MovieStartHourTxt;
     private javax.swing.JLabel MovieStartHour_Lbl;
+    private javax.swing.JTextField SeatTxt;
     private javax.swing.JLabel Seat_Lbl;
-    private javax.swing.JLabel SellingHour_Lbl;
+    private javax.swing.JTextField SellingTimeTxt;
+    private javax.swing.JLabel SellingTime_Lbl;
     private javax.swing.JLabel Ticket_RU_Lbl;
     private javax.swing.JButton UpdateBtn;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
     // End of variables declaration//GEN-END:variables
 }

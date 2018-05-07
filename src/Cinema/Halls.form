@@ -228,22 +228,22 @@
                           <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
                               <Group type="102" alignment="1" attributes="0">
-                                  <Component id="Date2lb" linkSize="2" min="-2" pref="134" max="-2" attributes="0"/>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="Date2Txt" max="32767" attributes="0"/>
-                              </Group>
-                              <Group type="102" attributes="0">
                                   <Component id="Date1lb" linkSize="2" min="-2" pref="134" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                                   <Component id="Date1Txt" max="32767" attributes="0"/>
                               </Group>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Component id="Date2lb" linkSize="2" min="-2" pref="134" max="-2" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Component id="Date2Txt" max="32767" attributes="0"/>
+                              </Group>
                           </Group>
-                          <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
+                          <EmptySpace min="25" pref="25" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="110" max="-2" attributes="0"/>
                           <Component id="Rap1GoBtn" min="-2" pref="300" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace pref="99" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -256,9 +256,9 @@
                               <Component id="Date1lb" linkSize="3" pref="45" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="Date2lb" linkSize="3" pref="51" max="32767" attributes="0"/>
-                              <Component id="Date2Txt" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="Date2lb" linkSize="3" alignment="3" pref="51" max="32767" attributes="0"/>
+                              <Component id="Date2Txt" alignment="3" min="-2" pref="51" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="Rap1GoBtn" pref="49" max="32767" attributes="0"/>
@@ -293,14 +293,22 @@
                 <Component class="javax.swing.JTextField" name="Date1Txt">
                   <Properties>
                     <Property name="horizontalAlignment" type="int" value="0"/>
+                    <Property name="text" type="java.lang.String" value="01/01/2000 08:00"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="Date2Txt">
+                  <Properties>
+                    <Property name="horizontalAlignment" type="int" value="0"/>
+                    <Property name="text" type="java.lang.String" value="01/01/2100 08:00"/>
+                  </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="Rap1GoBtn">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Go"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Rap1GoBtnActionPerformed"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>
@@ -349,6 +357,7 @@
                 <Component class="javax.swing.JTextField" name="HallTxt">
                   <Properties>
                     <Property name="horizontalAlignment" type="int" value="0"/>
+                    <Property name="text" type="java.lang.String" value="15"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="Hallb">
@@ -366,6 +375,9 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Go"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Rap2GoBtn1ActionPerformed"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>

@@ -64,7 +64,7 @@ public class Hall extends javax.swing.JFrame {
 
         try {
             Statement stmt = con.createStatement();
-            String SQL = "select * from ticket";
+            String SQL = "select * from ticket where id_hall=" + hall_ID;
             ResultSet rs = stmt.executeQuery(SQL);
             while (rs.next()) {
                 occupied.add(rs.getInt("chairNumber"));
@@ -96,7 +96,7 @@ public class Hall extends javax.swing.JFrame {
                     J.addActionListener((ActionEvent e)
                             -> {
                         this.dispose();
-                        TicketInfo_ReadUpdateDelete TIRUD = new TicketInfo_ReadUpdateDelete(User, CM, hallID);
+                        TicketInfo_ReadUpdateDelete TIRUD = new TicketInfo_ReadUpdateDelete(User, CM, hallID, ((JButton) e.getSource()).getText());
                         TIRUD.setResizable(false);
                         TIRUD.setVisible(true);
                     });

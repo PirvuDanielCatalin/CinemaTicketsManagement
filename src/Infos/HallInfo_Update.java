@@ -24,7 +24,7 @@ public class HallInfo_Update extends javax.swing.JFrame {
                     "root", //user
                     "");                                            //password 
         } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(HallInfo_Create.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(HallInfo_Update.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

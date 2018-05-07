@@ -2,13 +2,20 @@ package Cinema;
 
 import Infos.HallInfo_Create;
 import Logins.Start;
+import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 public class Halls extends javax.swing.JFrame {
 
@@ -190,8 +197,17 @@ public class Halls extends javax.swing.JFrame {
         Date2lb.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         Date1Txt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        Date1Txt.setText("01/01/2000 08:00");
+
+        Date2Txt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        Date2Txt.setText("01/01/2100 08:00");
 
         Rap1GoBtn.setText("Go");
+        Rap1GoBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Rap1GoBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout Report1Layout = new javax.swing.GroupLayout(Report1);
         Report1.setLayout(Report1Layout);
@@ -201,18 +217,18 @@ public class Halls extends javax.swing.JFrame {
                 .addGap(24, 24, 24)
                 .addGroup(Report1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(Report1Layout.createSequentialGroup()
-                        .addComponent(Date2lb, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(Date2Txt))
-                    .addGroup(Report1Layout.createSequentialGroup()
                         .addComponent(Date1lb, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(Date1Txt)))
+                        .addComponent(Date1Txt))
+                    .addGroup(Report1Layout.createSequentialGroup()
+                        .addComponent(Date2lb, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(Date2Txt)))
                 .addGap(25, 25, 25))
             .addGroup(Report1Layout.createSequentialGroup()
                 .addGap(110, 110, 110)
                 .addComponent(Rap1GoBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(99, Short.MAX_VALUE))
         );
 
         Report1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {Date1lb, Date2lb});
@@ -225,9 +241,9 @@ public class Halls extends javax.swing.JFrame {
                     .addComponent(Date1Txt)
                     .addComponent(Date1lb, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(Report1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(Report1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Date2lb, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
-                    .addComponent(Date2Txt))
+                    .addComponent(Date2Txt, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(Rap1GoBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
                 .addContainerGap())
@@ -238,12 +254,18 @@ public class Halls extends javax.swing.JFrame {
         Report2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         HallTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        HallTxt.setText("15");
 
         Hallb.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         Hallb.setText("Hall");
         Hallb.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         Rap2GoBtn1.setText("Go");
+        Rap2GoBtn1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Rap2GoBtn1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout Report2Layout = new javax.swing.GroupLayout(Report2);
         Report2.setLayout(Report2Layout);
@@ -349,6 +371,128 @@ public class Halls extends javax.swing.JFrame {
         this.dispose();
 
     }//GEN-LAST:event_LogOutBtnActionPerformed
+
+    private void Rap1GoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Rap1GoBtnActionPerformed
+        //A manager can see all tickets sold between two dates;
+        SimpleDateFormat originalFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        SimpleDateFormat targetFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        java.util.Date Date1 = new java.util.Date();
+        try {
+            Date1 = originalFormat.parse(Date1Txt.getText());
+        } catch (ParseException ex) {
+            Logger.getLogger(Halls.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        String Date1v2 = targetFormat.format(Date1);
+
+        java.util.Date Date2 = new java.util.Date();
+        try {
+            Date2 = originalFormat.parse(Date2Txt.getText());
+        } catch (ParseException ex) {
+            Logger.getLogger(Halls.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        String Date2v2 = targetFormat.format(Date2);
+        //System.out.println(Date1v2+"                   "+Date2v2);
+
+        if (Date1.before(Date2)) {
+            try {
+                Statement stmt = con.createStatement();
+                String SQL = "SELECT * from ticket where SellingHour between '" + Date1v2 + "' and '" + Date2v2 + "'";
+                ResultSet rs = stmt.executeQuery(SQL);
+                
+                rs.last();
+                int rows = rs.getRow();
+                rs.beforeFirst();
+                ResultSetMetaData meta = rs.getMetaData();
+                int cols = meta.getColumnCount();
+                
+                JFrame frame = new JFrame();
+                Object[][] rowData =  new Object[rows][5];
+                      
+                int i=0;       
+                while(rs.next())
+                {
+                    Object[] temp={ rs.getInt("id_hall"),
+                                    rs.getString("clientName"),
+                                    rs.getInt("chairNumber"),
+                                    rs.getTime("MovieStartHour"),
+                                    rs.getTimestamp("SellingHour")
+                                  };
+                    rowData[i]=temp;
+                    i++;
+                }
+                Object columnNames[] = { "Nr Sala","Nume Client","Loc","Ora Start Film","Data Vanzarii" };
+                JTable table = new JTable(rowData, columnNames);
+
+                JScrollPane scrollPane = new JScrollPane(table);
+                frame.add(scrollPane, BorderLayout.CENTER);
+                frame.setSize(1000,500);
+                frame.setVisible(true);
+                frame.setLocationRelativeTo(null);
+
+            } catch (SQLException ex) {
+                Logger.getLogger(Halls.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Wrong Information");
+        }
+
+    }//GEN-LAST:event_Rap1GoBtnActionPerformed
+
+    private void Rap2GoBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Rap2GoBtn1ActionPerformed
+        //A manager can see all tickets sold in a specific hall;
+        String hall = HallTxt.getText();
+        int aux = Integer.parseInt(hall);
+
+        if (aux > 1 && aux < 31) {
+            try {
+                Statement stmt = con.createStatement();
+                String SQL = "SELECT * from ticket where id_hall=" + aux;
+                ResultSet rs = stmt.executeQuery(SQL);
+                
+                rs.last();
+                int rows = rs.getRow();
+                rs.beforeFirst();
+                ResultSetMetaData meta = rs.getMetaData();
+                int cols = meta.getColumnCount();
+                
+                JFrame frame = new JFrame();
+                Object[][] rowData =  new Object[rows][5];
+                      
+                int i=0;       
+                while(rs.next())
+                {
+                    Object[] temp={ rs.getInt("id_hall"),
+                                    rs.getString("clientName"),
+                                    rs.getInt("chairNumber"),
+                                    rs.getTime("MovieStartHour"),
+                                    rs.getTimestamp("SellingHour")
+                                  };
+                    rowData[i]=temp;
+                    i++;
+                }
+                Object columnNames[] = { "Nr Sala","Nume Client","Loc","Ora Start Film","Data Vanzarii" };
+                JTable table = new JTable(rowData, columnNames);
+
+                JScrollPane scrollPane = new JScrollPane(table);
+                frame.add(scrollPane, BorderLayout.CENTER);
+                frame.setSize(1000,500);
+                frame.setVisible(true);
+                frame.setLocationRelativeTo(null);
+                 
+                
+
+            } catch (SQLException ex) {
+                Logger.getLogger(Halls.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(null,"Incorrect Hall");
+        }
+
+
+    }//GEN-LAST:event_Rap2GoBtn1ActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */

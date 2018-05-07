@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
 public class TicketInfo_Create extends javax.swing.JFrame {
@@ -26,7 +25,7 @@ public class TicketInfo_Create extends javax.swing.JFrame {
                     "root", //user
                     "");                                            //password 
         } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(Hall.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TicketInfo_Create.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -37,6 +36,7 @@ public class TicketInfo_Create extends javax.swing.JFrame {
         User = new String(user);
         CM = _CM;
         hallNr = hallID;
+
         hall_ID = Integer.parseInt(hallID.substring(2));
         seat_NR = Integer.parseInt(seat);
 
@@ -78,8 +78,6 @@ public class TicketInfo_Create extends javax.swing.JFrame {
         SeatTxt = new javax.swing.JTextField();
         MovieStartHour_Lbl = new javax.swing.JLabel();
         MovieStartHourTxt = new javax.swing.JTextField();
-        SellingHour_Lbl = new javax.swing.JLabel();
-        SellingHourTxt = new javax.swing.JTextField();
         CreateTBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -115,12 +113,6 @@ public class TicketInfo_Create extends javax.swing.JFrame {
 
         MovieStartHourTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-        SellingHour_Lbl.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        SellingHour_Lbl.setText("SellingHour");
-        SellingHour_Lbl.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        SellingHourTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-
         CreateTBtn.setText("Create");
         CreateTBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -140,22 +132,20 @@ public class TicketInfo_Create extends javax.swing.JFrame {
                         .addGap(18, 18, 18))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(SellingHour_Lbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(Hall_Lbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(Seat_Lbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(MovieStartHour_Lbl, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE))
                         .addGap(17, 17, 17)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(HallTxt)
+                    .addComponent(HallTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE)
                     .addComponent(ClientNameTxt)
                     .addComponent(SeatTxt)
-                    .addComponent(MovieStartHourTxt)
-                    .addComponent(SellingHourTxt))
+                    .addComponent(MovieStartHourTxt))
                 .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(77, 77, 77)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(CreateTBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(74, 74, 74))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -177,10 +167,6 @@ public class TicketInfo_Create extends javax.swing.JFrame {
                     .addComponent(MovieStartHour_Lbl, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(MovieStartHourTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(SellingHourTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(SellingHour_Lbl, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
                 .addComponent(CreateTBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -216,7 +202,7 @@ public class TicketInfo_Create extends javax.swing.JFrame {
                 String SQL = "Insert into ticket (id_hall,clientName,chairNumber,MovieStartHour,SellingHour) "
                         + "values (" + hall_ID + ",'" + Nume + "'," + seat_NR + ",'" + MovieStartHourTxt.getText() + "','" + datetime + "');";
 
-                System.out.println(SQL);
+                //System.out.println(SQL);
                 int confExecUpdate = stmt.executeUpdate(SQL);
 
                 this.dispose();
@@ -282,8 +268,6 @@ public class TicketInfo_Create extends javax.swing.JFrame {
     private javax.swing.JLabel MovieStartHour_Lbl;
     private javax.swing.JTextField SeatTxt;
     private javax.swing.JLabel Seat_Lbl;
-    private javax.swing.JTextField SellingHourTxt;
-    private javax.swing.JLabel SellingHour_Lbl;
     private javax.swing.JLabel Ticket_CD_Lbl;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
