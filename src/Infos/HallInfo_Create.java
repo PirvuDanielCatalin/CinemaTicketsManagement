@@ -1,6 +1,8 @@
 package Infos;
 
 import Cinema.Halls;
+import DBSocketConnection.Client;
+import java.io.IOException;
 import static java.lang.Integer.parseInt;
 import java.sql.*;
 import java.text.ParseException;
@@ -13,22 +15,9 @@ public class HallInfo_Create extends javax.swing.JFrame {
 
     String User;
     int CM;
-    Connection con;
-
-    public void DatabaseConnect() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/cinemamanagement", //database name
-                    "root", //user
-                    "");                                            //password 
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(HallInfo_Create.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
+    
     public HallInfo_Create(String _user, int _CM) {
-        DatabaseConnect();
+        
         initComponents();
         User = new String(_user);
         CM = _CM;
@@ -230,13 +219,23 @@ public class HallInfo_Create extends javax.swing.JFrame {
 
     private void FillComboBox() {
         try {
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("Select * from movies");
+            //Se preiau din BD toate titlurile de filme si se populeaza ComboBox-ul MovieNames
+            Client sclav = new Client();
+            sclav.connectToServer();
+
+            String SQL = "Select * from movies";
+
+            sclav.Query(SQL);
+            ResultSet rs = sclav.rs;
             while (rs.next()) {
                 String name = rs.getString("name");
                 MovieNames.addItem(name);
             }
         } catch (SQLException ex) {
+            Logger.getLogger(HallInfo_Create.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(HallInfo_Create.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(HallInfo_Create.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -245,25 +244,27 @@ public class HallInfo_Create extends javax.swing.JFrame {
     private void CreateHallInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateHallInfoActionPerformed
 
         // Validarea tipurilor de date
-        String S = Name_Txt.getText();
-        String T = (String) MovieNames.getSelectedItem();
+        String S = Name_Txt.getText();                      //Numele salii (NU ID-UL)
+        String T = (String) MovieNames.getSelectedItem();   //Filmul ales
 
         int nr = 0;
         int nrc = 0;
         try {
-            nr = parseInt(Hall_Number_Txt.getText());
+            nr = parseInt(Hall_Number_Txt.getText());       //Numarul salii (ID-ul)
             try {
-                nrc = parseInt(Chairs_Txt.getText());
+                nrc = parseInt(Chairs_Txt.getText());       //Nr de locuri
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(null, "Wrong Chair Number");
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "Wrong Hall Number");
         }
+        //Validarea id-ul salii
         if (nr < 1 || nr > 30) {
             nr = 0;
             JOptionPane.showMessageDialog(null, "Wrong Hall Number");
         }
+        //Validarea nr de locuri
         if (nrc < 1 || nrc > 60) {
             nrc = 0;
             JOptionPane.showMessageDialog(null, "Wrong Chair Number");
@@ -274,40 +275,54 @@ public class HallInfo_Create extends javax.swing.JFrame {
         java.util.Date d1 = null;
         java.util.Date d2 = null;
         try {
-            d1 = (java.util.Date) formatter.parse(StartHour_Txt.getText());
-            d2 = (java.util.Date) formatter.parse(FinalHour_Txt.getText());
+            d1 = (java.util.Date) formatter.parse(StartHour_Txt.getText());  //Ora de deschidere a salii
+            d2 = (java.util.Date) formatter.parse(FinalHour_Txt.getText());  //Ora de inchidere a salii
         } catch (ParseException ex) {
             JOptionPane.showMessageDialog(null, "Wrong Time Information");
         }
+        //Validarea orelor (Ora1 < Ora2)
         if (d1 != null && d2 != null && d2.before(d1)) {
             ok = 0;
             JOptionPane.showMessageDialog(null, "Wrong Time Information");
         }
 
+        //Verificarea tuturor datelor introduse
         if (S.equals("") || nr == 0 || nrc == 0 || ok == 0) {
+            /*Daca nu respecta conditiile, 
+            se reincearca prin deschiderea unei noi forme de tip HallInfo_Create in care se repeta procesul*/
             this.dispose();
             HallInfo_Create HICU = new HallInfo_Create(User, CM);
             HICU.setVisible(true);
             HICU.setResizable(false);
 
-            /*
-            Name_Txt.setText("");
-            Hall_Number_Txt.setText("");
-            Chairs_Txt.setText("");
-            StartHour_Txt.setText("");
-            FinalHour_Txt.setText("");
-             */
         } else {
             // Validarea existentei in baza de date
             ResultSet rs = null;
             try {
-                Statement isAlready = con.createStatement();
-                rs = isAlready.executeQuery("select id from halls where id=" + nr);
-                if (!rs.next()) {
+                Client sclav = new Client();
+                sclav.connectToServer();
+                String SQL = "select id from halls where id=" + nr;
+                sclav.Query(SQL);
+                rs = sclav.rs;
+            } catch (IOException ex) {
+                Logger.getLogger(HallInfo_Create.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(HallInfo_Create.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            //Se verifica in BD daca exista sala ce urmeaza a fi creata
+            try {
+                if (!rs.next()) //Daca nu exista se insereaza
+                {
+                    Client sclav = new Client();
+                    sclav.connectToServer();
+
                     String aux1 = formatter.format(d1);
                     String aux2 = formatter.format(d2);
-                    int confExecUpdate = isAlready.executeUpdate(
-                            "INSERT INTO halls values (" + nr + ",'" + S + "'," + nrc + ",'" + User + "','" + aux1 + "','" + aux2 + "','" + T + "')");
+
+                    String SQL = "INSERT INTO halls values (" + nr + ",'" + S + "'," + nrc + ",'" + User + "','" + aux1 + "','" + aux2 + "','" + T + "')";
+                    sclav.Query(SQL);
+                    int conf=sclav.confExec;
+
                     this.dispose();
                     Halls HS = new Halls(User, CM);
                     HS.setVisible(true);
@@ -316,6 +331,10 @@ public class HallInfo_Create extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null, "Hall already created");
                 }
             } catch (SQLException ex) {
+                Logger.getLogger(HallInfo_Create.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(HallInfo_Create.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
                 Logger.getLogger(HallInfo_Create.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

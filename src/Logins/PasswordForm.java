@@ -1,5 +1,7 @@
 package Logins;
 
+import DBSocketConnection.Client;
+import java.io.IOException;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -7,25 +9,11 @@ import javax.swing.JOptionPane;
 
 public class PasswordForm extends javax.swing.JFrame {
 
-    public String User;
-    Connection con;
-
-    public void DatabaseConnect() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/cinemamanagement", //database name
-                    "root", //user
-                    "");                                            //password 
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(PasswordForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
+    public String User; //Username-ul primit ca parametru de la forma anterioara de tip UserForm
+    
     public PasswordForm(String _User) {
         User = new String(_User);
         initComponents();
-        DatabaseConnect();
     }
 
     @SuppressWarnings("unchecked")
@@ -116,17 +104,28 @@ public class PasswordForm extends javax.swing.JFrame {
         String passw = new String(PasswordTxt.getPassword());
         String cpassw = new String(CPasswordTxt.getPassword());
 
-        if (passw.length() > 0 && passw.equals(cpassw)) {
+        if (passw.length() > 0 && passw.equals(cpassw)) //Se valideaza parolele 
+        {
             try {
-                Statement stmt = con.createStatement();
-                int updt = stmt.executeUpdate("update users set password='" + passw + "' where user='" + User + "'");
-            } catch (SQLException ex) {
+                Client sclav = new Client();
+                sclav.connectToServer();
+
+                String SQL="update users set password='" + passw + "' where user='" + User + "'";
+                
+                sclav.Query(SQL);
+                int conf = sclav.confExec;
+                
+                /*Dupa modificarea parolei in BD se redeschide o noua forma de tip Start
+                in care putem introduce noile date si folosi aplicatia in continuare.*/
+                Start JF = new Start();
+                JF.setVisible(true);
+                JF.setResizable(false);
+                this.dispose();
+            } catch (IOException ex) {
+                Logger.getLogger(PasswordForm.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
                 Logger.getLogger(PasswordForm.class.getName()).log(Level.SEVERE, null, ex);
             }
-            Start JF = new Start();
-            JF.setVisible(true);
-            JF.setResizable(false);
-            this.dispose();
         } else {
             JOptionPane.showMessageDialog(null, "Invalid details", "Password Error", JOptionPane.ERROR_MESSAGE);
         }

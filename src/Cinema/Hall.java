@@ -1,11 +1,13 @@
 package Cinema;
 
+import DBSocketConnection.Client;
 import Infos.HallInfo_Update;
 import Infos.TicketInfo_Create;
 import Infos.TicketInfo_ReadUpdateDelete;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -14,37 +16,34 @@ import javax.swing.JButton;
 
 public class Hall extends javax.swing.JFrame {
 
-    Connection con;
-    String User;
-    int CM;
-    int maxnr = 60;
-    ArrayList<Integer> occupied;
-
-    public void DatabaseConnect() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/cinemamanagement", //database name
-                    "root", //user
-                    "");                                            //password 
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(Hall.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+    String User;                    //Username-ul utilizatorului curent
+    int CM;                         //Statutul utilizatorului curent
+    int maxnr = 60;                 //Nr de scaune din sala curenta
+    ArrayList<Integer> occupied;    //Vector cu locurile ocupate din sala curenta existente in BD
 
     public Hall(String user, int _CM, String hallID) {
-        DatabaseConnect();
         initComponents();
         User = new String(user);
         CM = _CM;
-        int hall_ID = Integer.parseInt(hallID.substring(2));
+        int hall_ID = Integer.parseInt(hallID.substring(2)); //Se preia identificatorul unic al salii
+
+        //Se preia din BD nr de scaune corespnzator salii curente
         try {
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("select numberChairs from halls where id=" + hall_ID);
+            String SQL = "select numberChairs from halls where id=" + hall_ID;
+            Client sclav = new Client();
+            sclav.connectToServer();
+
+            sclav.Query(SQL);
+            ResultSet rs = sclav.rs;
+
             while (rs.next()) {
                 maxnr = rs.getInt("numberChairs");
             }
         } catch (SQLException ex) {
+            Logger.getLogger(Hall.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Hall.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(Hall.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -61,15 +60,23 @@ public class Hall extends javax.swing.JFrame {
         HallAccesed.setText(hallID);
 
         occupied = new ArrayList<>();
-
+        //Se preiau locurile ocupate din BD din sala curenta
         try {
-            Statement stmt = con.createStatement();
             String SQL = "select * from ticket where id_hall=" + hall_ID;
-            ResultSet rs = stmt.executeQuery(SQL);
+            Client sclav = new Client();
+            sclav.connectToServer();
+            
+            sclav.Query(SQL);
+            ResultSet rs= sclav.rs;
+            
             while (rs.next()) {
                 occupied.add(rs.getInt("chairNumber"));
             }
         } catch (SQLException ex) {
+            Logger.getLogger(Hall.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Hall.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(Hall.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -81,7 +88,9 @@ public class Hall extends javax.swing.JFrame {
             if (!occupied.contains(i)) //Daca nu este in BD => Loc liber
             {
                 J.setBackground(Color.GREEN);
-                if (CM == 1) {
+                if (CM == 1) /*Daca utilizatorul este manager=> 
+                Apasand pe un loc liber se deschide o noua forma de tip  TicketInfo_Create in care 
+                    se completeaza datele si se ocupa locul */ {
                     J.addActionListener((ActionEvent e)
                             -> {
                         this.dispose();
@@ -92,9 +101,10 @@ public class Hall extends javax.swing.JFrame {
                 }
             } else {
                 J.setBackground(Color.RED);
-                if (CM == 1) {
-                    J.addActionListener((ActionEvent e)
-                            -> {
+                if (CM == 1) /*Daca utilizatorul este manager=> 
+                Apasand pe un loc ocupat se deschide o noua forma de tip  TicketInfo_ReadUpdateDelete in care 
+                    se pot edita datele sau se poate elibera locul */ {
+                    J.addActionListener((ActionEvent e) -> {
                         this.dispose();
                         TicketInfo_ReadUpdateDelete TIRUD = new TicketInfo_ReadUpdateDelete(User, CM, hallID, ((JButton) e.getSource()).getText());
                         TIRUD.setResizable(false);
@@ -217,7 +227,8 @@ public class Hall extends javax.swing.JFrame {
     private void EditHallInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditHallInfoActionPerformed
 
         int sala = Integer.parseInt(HallAccesed.getText().substring(2));
-
+        /* Pt editarea informatiilor salii curente se deschide o noua forma de tip HallInfo_Update
+        in care se pot edita informatiile dupa care se updateaza BD. */
         this.dispose();
         HallInfo_Update HIU = new HallInfo_Update(User, CM, sala);
         HIU.setVisible(true);

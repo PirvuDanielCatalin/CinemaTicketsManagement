@@ -1,29 +1,18 @@
 package Logins;
 
+import DBSocketConnection.Client;
+import java.io.IOException;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class UserForm extends javax.swing.JFrame {
 
-    Connection con;
-
-    public void DatabaseConnect() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/cinemamanagement", //database name
-                    "root", //user
-                    "");                                            //password 
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(UserForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
     public UserForm() {
-        DatabaseConnect();
         initComponents();
+
     }
 
     @SuppressWarnings("unchecked")
@@ -93,13 +82,27 @@ public class UserForm extends javax.swing.JFrame {
 
         if (UserTxt.getText().length() > 0) {
             try {
-                ResultSet rs = null;
+                Client sclav = new Client();
+                sclav.connectToServer();
 
-                Statement stmt = con.createStatement();
-                rs = stmt.executeQuery("select * from users where user='" + UserTxt.getText() + "'");
+                String SQL = "select * from users where user='" + UserTxt.getText() + "'";
+
+                sclav.Query(SQL);
+                ResultSet rs = sclav.rs;
 
                 if (rs.first()) {
+                    /*Daca se gaseste => Se deschide o noua forma de tip PasswordForm in care vom introduce o noua parola*/
                     PasswordForm PF = new PasswordForm(UserTxt.getText());
+                    PF.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                    PF.addWindowListener(new java.awt.event.WindowAdapter() {
+                        @Override
+                        public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                            UserForm UF = new UserForm();
+                            UF.setVisible(true);
+                            UF.setLocation(300, 200);
+                            PF.dispose();
+                        }
+                    });
                     PF.setVisible(true);
                     PF.setLocation(700, 200);
                     this.dispose();
@@ -108,6 +111,10 @@ public class UserForm extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null, "Invalid details", "User Error", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (SQLException ex) {
+                Logger.getLogger(UserForm.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(UserForm.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
                 Logger.getLogger(UserForm.class.getName()).log(Level.SEVERE, null, ex);
             }
 

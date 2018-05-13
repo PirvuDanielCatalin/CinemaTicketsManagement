@@ -1,5 +1,7 @@
 package Logins;
 
+import DBSocketConnection.Client;
+import java.io.IOException;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -7,24 +9,9 @@ import javax.swing.JOptionPane;
 
 public class RegisterPage extends javax.swing.JFrame {
 
-    Connection con;
-
-    public void DatabaseConnect() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/cinemamanagement", //database name
-                    "root", //user
-                    "");                                            //password 
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(RegisterPage.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
     public RegisterPage() {
 
         initComponents();
-        DatabaseConnect();
     }
 
     /**
@@ -202,39 +189,64 @@ public class RegisterPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void UserTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UserTxtActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_UserTxtActionPerformed
 
     private void RegisterBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegisterBtnActionPerformed
 
+        /*Se preiau parola din passwordfield-ul PasswordTxt, 
+                    confirmarea parolei din passwordfield-ul ConfPasswordTxt, 
+                    si statutul dat de radiobutton-ul ManagerCheck.
+         */
         int aux = (ManagerCheck.isSelected()) ? 1 : 0;
         String passw = new String(PasswordTxt.getPassword());
         String cpassw = new String(ConfPasswordTxt.getPassword());
-        //JOptionPane.showMessageDialog(null,"("+count+","+UserTxt.getText()+","+passw+","+cpassw+","+aux+")");
+
         if (passw.length() > 0 && UserTxt.getText().length() > 0 && passw.equals(cpassw)) {
             ResultSet rs = null;
-            try {
-                Statement isAlready = con.createStatement();
-                rs = isAlready.executeQuery(
-                        "select user,password "
-                        + "from users "
-                        + "where user='" + UserTxt.getText() + "' and password='" + passw + "'");
+            /*Se cauta in BD datele introduse.*/
 
-            } catch (SQLException ex) {
+            try {
+                String SQL = "select user,password "
+                        + "from users "
+                        + "where user='" + UserTxt.getText() + "' and password='" + passw + "'";
+                Client sclav = new Client();
+                sclav.connectToServer();
+
+                sclav.Query(SQL);
+                rs = sclav.rs;
+            } catch (IOException ex) {
+                Logger.getLogger(RegisterPage.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
                 Logger.getLogger(RegisterPage.class.getName()).log(Level.SEVERE, null, ex);
             }
 
             try {
-                if (!rs.next()) {
+                if (!rs.next()) //Se verifica daca datele introduse exista deja in BD
+                {
+                    //Daca nu, se insereaza in BD noul cont
                     try {
-                        Statement RegIn = con.createStatement();
-                        int confExecUpdate = RegIn.executeUpdate(
-                                "INSERT INTO users (user,password,isManager) values "
-                                + "('" + UserTxt.getText() + "','" + passw + "'," + aux + ")");
+                        Client sclav = new Client();
+                        String SQL = "INSERT INTO users (user,password,isManager) values "
+                                  + "('" + UserTxt.getText() + "','" + passw + "'," + aux + ")";
+                        sclav.connectToServer();
 
-                    } catch (SQLException ex) {
+                        sclav.Query(SQL);
+                        int confExec = sclav.confExec;
+                    } catch (IOException ex) {
+                        Logger.getLogger(RegisterPage.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (ClassNotFoundException ex) {
                         Logger.getLogger(RegisterPage.class.getName()).log(Level.SEVERE, null, ex);
                     }
+
+
+                    /*Dupa introducerea noului cont in BD se redeschide o noua forma de tip Start 
+                        in care putem introduce noile date si folosi aplicatia in continuare.*/
+                    Start JF = new Start();
+                    JF.setVisible(true);
+                    JF.setResizable(false);
+                    this.dispose();
+
                 } else {
                     JOptionPane.showMessageDialog(null, "Account already created", "Register Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -243,15 +255,11 @@ public class RegisterPage extends javax.swing.JFrame {
             }
 
         } else {
-            //JOptionPane.showMessageDialog(null,"("+count+","+UserTxt.getText()+","+PasswordTxt.getPassword()+","+ConfPasswordTxt.getPassword()+","+aux+")");
             JOptionPane.showMessageDialog(null, "Invalid register details", "Register Error", JOptionPane.ERROR_MESSAGE);
             PasswordTxt.setText("");
             ConfPasswordTxt.setText("");
         }
-        Start JF = new Start();
-        JF.setVisible(true);
-        JF.setResizable(false);
-        this.dispose();
+
 
     }//GEN-LAST:event_RegisterBtnActionPerformed
 
@@ -294,11 +302,12 @@ public class RegisterPage extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
+ /*
         java.awt.EventQueue.invokeLater(() -> {
             RegisterPage JRF = new RegisterPage();
             JRF.setVisible(true);
             JRF.setResizable(false);
-        });
+        });*/
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

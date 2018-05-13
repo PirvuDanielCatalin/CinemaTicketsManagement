@@ -1,6 +1,8 @@
 package Infos;
 
 import Cinema.Hall;
+import DBSocketConnection.Client;
+import java.io.IOException;
 import static java.lang.Integer.parseInt;
 import java.sql.*;
 import java.text.ParseException;
@@ -13,23 +15,9 @@ public class HallInfo_Update extends javax.swing.JFrame {
 
     String User;
     int CM;
-    Connection con;
     int ID;
 
-    public void DatabaseConnect() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/cinemamanagement", //database name
-                    "root", //user
-                    "");                                            //password 
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(HallInfo_Update.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
     public HallInfo_Update(String _User, int _CM, int id) {
-        DatabaseConnect();
         initComponents();
         FillComboBox();
 
@@ -45,10 +33,20 @@ public class HallInfo_Update extends javax.swing.JFrame {
         java.util.Date t1 = new java.util.Date(),
                 t2 = new java.util.Date();
 
+        //Se extrag informatiile salii din BD
         ResultSet rs = null;
         try {
-            Statement stmt = con.createStatement();
-            rs = stmt.executeQuery("Select * from halls where id=" + id);
+            Client sclav = new Client();
+            sclav.connectToServer();
+            String SQL = "Select * from halls where id=" + id;
+            sclav.Query(SQL);
+            rs = sclav.rs;
+        } catch (IOException ex) {
+            Logger.getLogger(HallInfo_Update.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(HallInfo_Update.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
             while (rs.next()) {
                 hallName = rs.getString("name");
                 nrChrs = rs.getInt("numberChairs");
@@ -63,6 +61,7 @@ public class HallInfo_Update extends javax.swing.JFrame {
         String s1 = formatter.format(t1);
         String s2 = formatter.format(t2);
 
+        //Se completeaza campurile formularului
         Hall_Number_Txt.setText(id + "");
         Hall_Number_Txt.setEditable(false);
         Name_Txt.setText(hallName);
@@ -76,14 +75,21 @@ public class HallInfo_Update extends javax.swing.JFrame {
 
     private void FillComboBox() {
         try {
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("Select * from movies");
+            Client sclav = new Client();
+            sclav.connectToServer();
+            String SQL = "Select * from movies";
+            sclav.Query(SQL);
+            ResultSet rs = sclav.rs;
             while (rs.next()) {
                 String name = rs.getString("name");
                 MovieNames.addItem(name);
             }
         } catch (SQLException ex) {
             Logger.getLogger(HallInfo_Create.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(HallInfo_Update.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(HallInfo_Update.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -257,26 +263,28 @@ public class HallInfo_Update extends javax.swing.JFrame {
     private void UpdateHallInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UpdateHallInfoActionPerformed
 
         // Validarea tipurilor de date
-        String S = Name_Txt.getText();
-        String T = (String) MovieNames.getSelectedItem();
-        String M = ManagerID_Txt.getText();
+        String S = Name_Txt.getText();                      //Numele salii
+        String T = (String) MovieNames.getSelectedItem();   //Filmul ales
+        String M = ManagerID_Txt.getText();                 //Id Manager -- Username-ul Managerului
 
         int nr = 0;
         int nrc = 0;
         try {
-            nr = parseInt(Hall_Number_Txt.getText());
+            nr = parseInt(Hall_Number_Txt.getText()); //Nr salii 
             try {
-                nrc = parseInt(Chairs_Txt.getText());
+                nrc = parseInt(Chairs_Txt.getText()); //Nr locuri
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(null, "Wrong Chair Number");
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "Wrong Hall Number");
         }
+        //Validarea numarului salii
         if (nr < 1 || nr > 30) {
             nr = 0;
             JOptionPane.showMessageDialog(null, "Wrong Hall Number");
         }
+        //Validarea nr de locuri
         if (nrc < 1 || nrc > 60) {
             nrc = 0;
             JOptionPane.showMessageDialog(null, "Wrong Chair Number");
@@ -287,28 +295,34 @@ public class HallInfo_Update extends javax.swing.JFrame {
         java.util.Date d1 = null;
         java.util.Date d2 = null;
         try {
-            d1 = (java.util.Date) formatter.parse(StartHour_Txt.getText());
-            d2 = (java.util.Date) formatter.parse(FinalHour_Txt.getText());
+            d1 = (java.util.Date) formatter.parse(StartHour_Txt.getText()); //Ora de deschidere a salii
+            d2 = (java.util.Date) formatter.parse(FinalHour_Txt.getText()); //Ora de inchidere a salii
         } catch (ParseException ex) {
             JOptionPane.showMessageDialog(null, "Wrong Time Information");
         }
+        //Validarea orelor (Ora1 < Ora2)
         if (d1 != null && d2 != null && d2.before(d1)) {
             ok = 0;
             JOptionPane.showMessageDialog(null, "Wrong Time Information");
         }
 
+        //Verificarea tuturor datelor introduse
         if (S.equals("") || nr == 0 || nrc == 0 || ok == 0) {
+            /*Daca nu respecta conditiile, 
+            se reincearca prin deschiderea unei noi forme de tip  HallInfo_Update in care se repeta procesul*/
             this.dispose();
             HallInfo_Update HIU = new HallInfo_Update(User, CM, ID);
             HIU.setVisible(true);
             HIU.setResizable(false);
 
         } else {
-            String aux1 = formatter.format(d1);
-            String aux2 = formatter.format(d2);
-
             try {
-                Statement stmt = con.createStatement();
+                String aux1 = formatter.format(d1);
+                String aux2 = formatter.format(d2);
+                
+                //Se updateaza BD si se revine la forma precedenta de tip Hall
+                Client sclav = new Client();
+                sclav.connectToServer();
                 String SQL_update = "Update halls "
                         + "set name='" + S + "', "
                         + "numberChairs=" + nrc + ", "
@@ -317,19 +331,18 @@ public class HallInfo_Update extends javax.swing.JFrame {
                         + "finalHour='" + aux2 + "', "
                         + "movieName='" + T + "' "
                         + "where id=" + ID + ";";
-                System.out.println(SQL_update);
-
-                int updt = stmt.executeUpdate(SQL_update);
+                sclav.Query(SQL_update);
+                int updt = sclav.confExec;
                 this.dispose();
                 if (updt > 0) {
                     JOptionPane.showMessageDialog(null, "Update Done");
                 }
-
                 Hall H = new Hall(User, CM, "S " + ID);
                 H.setVisible(true);
                 H.setResizable(false);
-
-            } catch (SQLException ex) {
+            } catch (IOException ex) {
+                Logger.getLogger(HallInfo_Update.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
                 Logger.getLogger(HallInfo_Update.class.getName()).log(Level.SEVERE, null, ex);
             }
 

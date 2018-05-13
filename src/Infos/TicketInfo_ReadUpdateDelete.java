@@ -1,6 +1,8 @@
 package Infos;
 
 import Cinema.Hall;
+import DBSocketConnection.Client;
+import java.io.IOException;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.logging.Level;
@@ -11,9 +13,9 @@ public class TicketInfo_ReadUpdateDelete extends javax.swing.JFrame {
     Connection con;
     String User;
     int CM;
-    String hallNr;
-    int hall_ID;
-    int seat_NR;
+    String hallNr;          //Numele salii de tip "S"+identificator
+    int hall_ID;            //Identificatorul salii 
+    int seat_NR;            //Nr de locuri
 
     public void DatabaseConnect() {
         try {
@@ -45,12 +47,15 @@ public class TicketInfo_ReadUpdateDelete extends javax.swing.JFrame {
 
         String Name = new String();
 
+        //Se preiau informatiile corespunzatoare locului ales din BD
         try {
-            Statement stmt = con.createStatement();
             String SQL = "SELECT * "
                     + "FROM ticket t "
                     + "WHERE t.chairNumber=" + seat_NR;
-            ResultSet rs = stmt.executeQuery(SQL);
+            Client sclav = new Client();
+            sclav.connectToServer();
+            sclav.Query(SQL);
+            ResultSet rs = sclav.rs;
             while (rs.next()) {
                 d = rs.getTime("MovieStartHour");
                 e = rs.getTimestamp("SellingHour");
@@ -59,8 +64,13 @@ public class TicketInfo_ReadUpdateDelete extends javax.swing.JFrame {
 
         } catch (SQLException ex) {
             Logger.getLogger(TicketInfo_Create.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(TicketInfo_ReadUpdateDelete.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(TicketInfo_ReadUpdateDelete.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        //Se completeaza campurile formularului 
         HallTxt.setText(hall_ID + "");
         HallTxt.setEditable(false);
         SeatTxt.setText(seat);
@@ -224,16 +234,21 @@ public class TicketInfo_ReadUpdateDelete extends javax.swing.JFrame {
 
     private void DeleteTBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteTBtnActionPerformed
 
+        //Se sterge/elibereaza din BD locul ales, dupa care se revine la forma anterioara de tip Hall
         try {
-            Statement stmt = con.createStatement();
             String SQL = "DELETE from ticket where chairNumber=" + seat_NR;
-            int deleteResult = stmt.executeUpdate(SQL);
-
+            Client sclav = new Client();
+            sclav.connectToServer();
+            sclav.Query(SQL);
+            int deleteResult = sclav.confExec;
+            
             this.dispose();
             Hall H = new Hall(User, CM, hallNr);
             H.setVisible(true);
             H.setResizable(false);
-        } catch (SQLException ex) {
+        } catch (IOException ex) {
+            Logger.getLogger(TicketInfo_ReadUpdateDelete.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(TicketInfo_ReadUpdateDelete.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_DeleteTBtnActionPerformed
@@ -241,15 +256,19 @@ public class TicketInfo_ReadUpdateDelete extends javax.swing.JFrame {
     private void UpdateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UpdateBtnActionPerformed
 
         try {
-            Statement stmt = con.createStatement();
+            //Se editeaza locul ales, se updateaza BD, dupa care se revine la forma anterioara de tip Hall
             String SQL = "UPDATE ticket set clientName='" + ClientNameTxt.getText() + "' where chairNumber=" + seat_NR;
-            int deleteResult = stmt.executeUpdate(SQL);
-
+            Client sclav = new Client();
+            sclav.connectToServer();
+            sclav.Query(SQL);
+            int deleteResult = sclav.confExec;
             this.dispose();
             Hall H = new Hall(User, CM, hallNr);
             H.setVisible(true);
             H.setResizable(false);
-        } catch (SQLException ex) {
+        } catch (IOException ex) {
+            Logger.getLogger(TicketInfo_ReadUpdateDelete.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(TicketInfo_ReadUpdateDelete.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_UpdateBtnActionPerformed

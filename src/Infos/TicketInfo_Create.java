@@ -1,6 +1,8 @@
 package Infos;
 
 import Cinema.Hall;
+import DBSocketConnection.Client;
+import java.io.IOException;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -10,29 +12,14 @@ import javax.swing.JOptionPane;
 
 public class TicketInfo_Create extends javax.swing.JFrame {
 
-    Connection con;
     String User;
     int CM;
-    String hallNr;
-    int hall_ID;
-    int seat_NR;
-
-    public void DatabaseConnect() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/cinemamanagement", //database name
-                    "root", //user
-                    "");                                            //password 
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(TicketInfo_Create.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+    String hallNr;          //Numele salii de tip "S"+identificator
+    int hall_ID;            //Identificatorul salii 
+    int seat_NR;            //Nr de locuri
 
     public TicketInfo_Create(String user, int _CM, String hallID, String seat) {
         initComponents();
-        DatabaseConnect();
-
         User = new String(user);
         CM = _CM;
         hallNr = hallID;
@@ -43,20 +30,28 @@ public class TicketInfo_Create extends javax.swing.JFrame {
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
         java.util.Date d = new java.util.Date();
 
+        //Se extrage ora filmului din sala curenta
         try {
-            Statement stmt = con.createStatement();
             String SQL = "SELECT m.startHour,h.id "
-                    + "FROM movies m join halls h on (m.name=h.movieName) "
-                    + "WHERE h.id=" + hall_ID;
-            ResultSet rs = stmt.executeQuery(SQL);
+                       + "FROM movies m join halls h on (m.name=h.movieName) "
+                       + "WHERE h.id=" + hall_ID;
+            Client sclav = new Client();
+            sclav.connectToServer();
+            sclav.Query(SQL);
+            ResultSet rs = sclav.rs;
             while (rs.next()) {
                 d = rs.getTime(1);
             }
 
         } catch (SQLException ex) {
             Logger.getLogger(TicketInfo_Create.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(TicketInfo_Create.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(TicketInfo_Create.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        //Se completeaza campurile formularului
         HallTxt.setText(hall_ID + "");
         HallTxt.setEditable(false);
         SeatTxt.setText(seat);
@@ -195,22 +190,26 @@ public class TicketInfo_Create extends javax.swing.JFrame {
         //Valdare
         String Nume = ClientNameTxt.getText();
 
+        /*Se valideaza numele clientului de pe bilet, se introduce in BD biletul 
+            si se revine la forma precedenta de tip Hall */
         if (Nume.length() > 0) {
             try {
-                Statement stmt = con.createStatement();
                 String datetime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
                 String SQL = "Insert into ticket (id_hall,clientName,chairNumber,MovieStartHour,SellingHour) "
                         + "values (" + hall_ID + ",'" + Nume + "'," + seat_NR + ",'" + MovieStartHourTxt.getText() + "','" + datetime + "');";
-
-                //System.out.println(SQL);
-                int confExecUpdate = stmt.executeUpdate(SQL);
+                Client sclav = new Client();
+                sclav.connectToServer();
+                sclav.Query(SQL);
+                int confExecUpdate = sclav.confExec;
 
                 this.dispose();
                 Hall H = new Hall(User, CM, hallNr);
                 H.setVisible(true);
                 H.setResizable(false);
 
-            } catch (SQLException ex) {
+            } catch (IOException ex) {
+                Logger.getLogger(TicketInfo_Create.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
                 Logger.getLogger(TicketInfo_Create.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {

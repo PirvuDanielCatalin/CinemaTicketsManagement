@@ -1,10 +1,12 @@
 package Cinema;
 
+import DBSocketConnection.Client;
 import Infos.HallInfo_Create;
 import Logins.Start;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,36 +21,24 @@ import javax.swing.JTable;
 
 public class Halls extends javax.swing.JFrame {
 
-    Connection con;
-    String User;
-    int CM;
-    int nmbr;
-    ArrayList<Integer> already;
-
-    public void DatabaseConnect() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/cinemamanagement", //database name
-                    "root", //user
-                    "");                                            //password 
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(Halls.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+    String User;                //Username-ul utilizatorului curent
+    int CM;                     //Statutul utilizatorului curent
+    int nmbr;                   //Nr de scaune intr-o sala
+    ArrayList<Integer> already; //Vector cu salile existente in BD
 
     public Halls(String user, int _CM) {
-        DatabaseConnect();
+
         initComponents();
 
         User = new String(user);
         CM = _CM;
-        nmbr = 60; // Se suprascrie cu un nr de scaune introdus de manager 
+        nmbr = 60; // Se suprascrie cu un nr de scaune introdus de manager .
 
         String Logged = "Hello " + user;
         if (CM == 1) {
             Logged = Logged + " ( Manager )";
         } else {
+            //Clientul, spre deosebire de manager, nu poate adauga sali sau efectua rapoarte.
             Logged = Logged + " ( Client )";
             RightPanelLayout.setVisible(false);
             AddHallBtn.setVisible(false);
@@ -59,37 +49,45 @@ public class Halls extends javax.swing.JFrame {
         HallLayout.setLayout(new GridLayout(6, 5));
 
         already = new ArrayList<>();
+        //Se preiau din BD salile existente. Salile se identifica unic printr-un id.
+
         try {
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from halls");
+            Client sclav = new Client();
+            sclav.connectToServer();
+
+            sclav.Query("select * from halls");
+            ResultSet rs = sclav.rs;
+            
             while (rs.next()) {
                 already.add(rs.getInt("id"));
             }
         } catch (SQLException ex) {
             Logger.getLogger(Halls.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Halls.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Halls.class.getName()).log(Level.SEVERE, null, ex);
         }
         for (int i = 1; i <= 30; i++) {
 
+            /*Se creeaza o noua sala cu id-ul egal cu pasul curent(i).*/
             JButton J = new JButton("S " + i);
+            /*Se adauga functionalitate butonului. 
+            La apasare acesta va deschide o noua forma de tip Hall in care vor fi afisate locurile din respectiva sala*/
+            J.addActionListener((ActionEvent e)
+                    -> {
+                Hall H = new Hall(User, CM, ((JButton) e.getSource()).getText());
+                H.setVisible(true);
+                H.setResizable(false);
+            });
+            //Daca sala exista , atunci butonul este vizibil.
             if (already.contains(i)) {
-                J.addActionListener((ActionEvent e)
-                        -> {
-                    Hall H = new Hall(User, CM, ((JButton) e.getSource()).getText());
-                    H.setVisible(true);
-                    H.setResizable(false);
-                });
                 J.setVisible(true);
             } else {
-                J.addActionListener((ActionEvent e)
-                        -> {
-                    Hall H = new Hall(User, CM, ((JButton) e.getSource()).getText());
-                    H.setVisible(true);
-                    H.setResizable(false);
-                });
                 J.setVisible(false);
             }
 
-            HallLayout.add(J);
+            HallLayout.add(J); //Se adauga butonul creat la panelul de butoane
         }
     }
 
@@ -357,6 +355,8 @@ public class Halls extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void AddHallBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddHallBtnActionPerformed
+        /* Se deschide o noua forma de tip HallInfo_Create care preia username-ul si statutul utilizatorului 
+        si care ofera un GUI al formularului de creare a unei sali. */
         HallInfo_Create HICU = new HallInfo_Create(User, CM);
         HICU.setVisible(true);
         HICU.setResizable(false);
@@ -365,6 +365,7 @@ public class Halls extends javax.swing.JFrame {
     }//GEN-LAST:event_AddHallBtnActionPerformed
 
     private void LogOutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogOutBtnActionPerformed
+        /* Butonul LogOut "reseteaza" programul revenind la forma Start. */
         Start JF = new Start();
         JF.setVisible(true);
         JF.setResizable(false);
@@ -377,6 +378,7 @@ public class Halls extends javax.swing.JFrame {
         SimpleDateFormat originalFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         SimpleDateFormat targetFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+        //Se preiau cele 2 date in format originalFormat si se formateaza la targetFormat
         java.util.Date Date1 = new java.util.Date();
         try {
             Date1 = originalFormat.parse(Date1Txt.getText());
@@ -392,45 +394,52 @@ public class Halls extends javax.swing.JFrame {
             Logger.getLogger(Halls.class.getName()).log(Level.SEVERE, null, ex);
         }
         String Date2v2 = targetFormat.format(Date2);
-        //System.out.println(Date1v2+"                   "+Date2v2);
 
-        if (Date1.before(Date2)) {
+        if (Date1.before(Date2)) //Se valideaza informatiile (Date1 < Date2)
+        {
             try {
-                Statement stmt = con.createStatement();
+                //Se preiau toate biletele din BD vandute in intervalul dat de cele 2 date si se populeaza tabelul
+
                 String SQL = "SELECT * from ticket where SellingHour between '" + Date1v2 + "' and '" + Date2v2 + "'";
-                ResultSet rs = stmt.executeQuery(SQL);
-                
+                Client sclav = new Client();
+                sclav.connectToServer();
+                sclav.Query(SQL);
+                ResultSet rs = sclav.rs;
+
                 rs.last();
                 int rows = rs.getRow();
                 rs.beforeFirst();
                 ResultSetMetaData meta = rs.getMetaData();
                 int cols = meta.getColumnCount();
-                
+
                 JFrame frame = new JFrame();
-                Object[][] rowData =  new Object[rows][5];
-                      
-                int i=0;       
-                while(rs.next())
-                {
-                    Object[] temp={ rs.getInt("id_hall"),
-                                    rs.getString("clientName"),
-                                    rs.getInt("chairNumber"),
-                                    rs.getTime("MovieStartHour"),
-                                    rs.getTimestamp("SellingHour")
-                                  };
-                    rowData[i]=temp;
+                Object[][] rowData = new Object[rows][5];
+
+                int i = 0;
+                while (rs.next()) {
+                    Object[] temp = {rs.getInt("id_hall"),
+                        rs.getString("clientName"),
+                        rs.getInt("chairNumber"),
+                        rs.getTime("MovieStartHour"),
+                        rs.getTimestamp("SellingHour")
+                    };
+                    rowData[i] = temp;
                     i++;
                 }
-                Object columnNames[] = { "Nr Sala","Nume Client","Loc","Ora Start Film","Data Vanzarii" };
+                Object columnNames[] = {"Nr Sala", "Nume Client", "Loc", "Ora Start Film", "Data Vanzarii"};
                 JTable table = new JTable(rowData, columnNames);
 
                 JScrollPane scrollPane = new JScrollPane(table);
                 frame.add(scrollPane, BorderLayout.CENTER);
-                frame.setSize(1000,500);
+                frame.setSize(1000, 500);
                 frame.setVisible(true);
                 frame.setLocationRelativeTo(null);
 
             } catch (SQLException ex) {
+                Logger.getLogger(Halls.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Halls.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
                 Logger.getLogger(Halls.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
@@ -441,54 +450,60 @@ public class Halls extends javax.swing.JFrame {
 
     private void Rap2GoBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Rap2GoBtn1ActionPerformed
         //A manager can see all tickets sold in a specific hall;
+        //Se preia Stringul dat ca nr salii din campul HallTxt si se converteste la int
         String hall = HallTxt.getText();
         int aux = Integer.parseInt(hall);
 
-        if (aux > 1 && aux < 31) {
+        if (aux > 1 && aux < 31) //Se valideaza informatia ( Sala sa existe)
+        {
             try {
-                Statement stmt = con.createStatement();
+                //Se preiua din BD toate biletele vandute in sala ceruta si se populeaza tabelul
+
                 String SQL = "SELECT * from ticket where id_hall=" + aux;
-                ResultSet rs = stmt.executeQuery(SQL);
-                
+
+                Client sclav = new Client();
+                sclav.connectToServer();
+                sclav.Query(SQL);
+                ResultSet rs = sclav.rs;
+
                 rs.last();
                 int rows = rs.getRow();
                 rs.beforeFirst();
                 ResultSetMetaData meta = rs.getMetaData();
                 int cols = meta.getColumnCount();
-                
+
                 JFrame frame = new JFrame();
-                Object[][] rowData =  new Object[rows][5];
-                      
-                int i=0;       
-                while(rs.next())
-                {
-                    Object[] temp={ rs.getInt("id_hall"),
-                                    rs.getString("clientName"),
-                                    rs.getInt("chairNumber"),
-                                    rs.getTime("MovieStartHour"),
-                                    rs.getTimestamp("SellingHour")
-                                  };
-                    rowData[i]=temp;
+                Object[][] rowData = new Object[rows][5];
+
+                int i = 0;
+                while (rs.next()) {
+                    Object[] temp = {rs.getInt("id_hall"),
+                        rs.getString("clientName"),
+                        rs.getInt("chairNumber"),
+                        rs.getTime("MovieStartHour"),
+                        rs.getTimestamp("SellingHour")
+                    };
+                    rowData[i] = temp;
                     i++;
                 }
-                Object columnNames[] = { "Nr Sala","Nume Client","Loc","Ora Start Film","Data Vanzarii" };
+                Object columnNames[] = {"Nr Sala", "Nume Client", "Loc", "Ora Start Film", "Data Vanzarii"};
                 JTable table = new JTable(rowData, columnNames);
 
                 JScrollPane scrollPane = new JScrollPane(table);
                 frame.add(scrollPane, BorderLayout.CENTER);
-                frame.setSize(1000,500);
+                frame.setSize(1000, 500);
                 frame.setVisible(true);
                 frame.setLocationRelativeTo(null);
-                 
-                
 
             } catch (SQLException ex) {
                 Logger.getLogger(Halls.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Halls.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Halls.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
-        else
-        {
-            JOptionPane.showMessageDialog(null,"Incorrect Hall");
+        } else {
+            JOptionPane.showMessageDialog(null, "Incorrect Hall");
         }
 
 

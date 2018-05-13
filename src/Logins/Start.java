@@ -1,6 +1,9 @@
 package Logins;
 
 import Cinema.Halls;
+import DBSocketConnection.Client;
+import DBSocketConnection.Server;
+import java.io.IOException;
 import javax.swing.*;
 import java.sql.*;
 import java.util.logging.Level;
@@ -8,22 +11,7 @@ import java.util.logging.Logger;
 
 public class Start extends JFrame {
 
-    Connection con;
-
-    public void DatabaseConnect() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/cinemamanagement", //database name
-                    "root", //user
-                    "");                                            //password 
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(Start.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
     public Start() {
-        DatabaseConnect();
         initComponents();
     }
 
@@ -215,38 +203,76 @@ public class Start extends JFrame {
 
     private void Reset_BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Reset_BtnActionPerformed
 
+        /*La apasarea butonului Reset se creeaza o noua forma de tip UserForm in care 
+        vom introduce username-ul atasat contului a carui parola vrem sa o modificam*/
         UserForm UF = new UserForm();
+        UF.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        UF.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                Start JF = new Start();
+                JF.setVisible(true);
+                JF.setResizable(false);
+                UF.dispose();
+            }
+        });
         UF.setVisible(true);
         UF.setLocation(300, 200);
         this.dispose();
+
 
     }//GEN-LAST:event_Reset_BtnActionPerformed
 
     private void Login_BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Login_BtnActionPerformed
 
+        /*Se preiau username-ul din textfield-ul UserTxt,
+                    parola din passwordfield-ul PasswordTxt 
+                    si statutul dat de radiobutton-ul ManagerCheck.
+         */
         String User = UserTxt.getText();
         String Password = new String(PasswordTxt.getPassword());
         int Expectation = (ManagerCheck.isSelected()) ? 1 : 0;
-        int Reality = 0;
+
+        int Reality = 0;//Se presupune ca utilizatorul este implicit client.
+
         if (Password.length() > 0 && UserTxt.getText().length() > 0) {
-            ResultSet rs = null;
+            /*
+                Client sclav = new Client();
+                sclav.connectToServer();
+                String SQL = 
+                sclav.Query(SQL);
+                ResultSet rs = sclav.rs;
+            */
             try {
-                Statement isAlready = con.createStatement();
-                rs = isAlready.executeQuery(
-                        "select * "
-                        + "from users "
-                        + "where user='" + User + "' and password='" + Password + "'");
+                
+                Client sclav = new Client();
+                sclav.connectToServer();
+
+                String SQL = "select * from users where user='" + User + "' and password='" + Password + "'";
+                /*Se preiau datele din baza de date corespunzatoare user-ului si parolei introduse.*/
+                sclav.Query(SQL);
+                ResultSet rs = sclav.rs;
+
+                //Statutul real al utilizatorului este cel din baza de date daca in aceasta exista contul introdus.
                 Reality = (rs.first()) ? rs.getInt(4) : 0;
+
+                //Daca datele introduse corespund cu cele din BD atunci logare se efectueaza cu succes.
                 if (rs.first() && Expectation == Reality) {
+                    /*Se deschide o noua forma de tip Halls in care sunt afisate salile si rapoartele.*/
                     Halls HS = new Halls(User, Reality);
                     HS.setVisible(true);
                     HS.setResizable(false);
                     this.dispose();
+
                 } else {
                     JOptionPane.showMessageDialog(null, "Invalid login details", "Login Error", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(RegisterPage.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Start.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Start.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         } else {
@@ -259,7 +285,18 @@ public class Start extends JFrame {
 
     private void Register_BtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Register_BtnActionPerformed
 
+        /*Se deschide o noua forma de tip RegisterPage in care se introduc datele unui nou cont*/
         RegisterPage RegPg = new RegisterPage();
+        RegPg.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        RegPg.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                Start JF = new Start();
+                JF.setVisible(true);
+                JF.setResizable(false);
+                RegPg.dispose();
+            }
+        });
         RegPg.setVisible(true);
         RegPg.setResizable(false);
         this.dispose();
@@ -284,7 +321,7 @@ public class Start extends JFrame {
         ManagerCheck.setSelected(false);
     }//GEN-LAST:event_ClientCheckActionPerformed
 
-    public static void main(String args[]) {
+    public static void main(String args[]) throws IOException, SQLException {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -316,22 +353,6 @@ public class Start extends JFrame {
             JF.setResizable(false);
         });
 
-        /*
-        String s="15:41";
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
-        java.util.Date d1=null;
-            try 
-            {
-                d1=(java.util.Date) formatter.parse(s);
-            } 
-            catch (ParseException ex) 
-            {
-                ex.printStackTrace();
-            }
-            String formattedTime = formatter.format(d1);
-
-            System.out.println(formattedTime);
-         */
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
