@@ -1,3 +1,4 @@
+# Cinema-Tickets-Management---CRUD-Type-Java-App
 
 The application comes with a minimalist graphical interface created using Swing.
 It has an authentication system, plus the choice of user type.
