@@ -1,16 +1,7 @@
 
-				~ Ticket management software for a cinema ~
-
-	-Authentication System with username and password;
-	
-	-Cinema Hall Management:
-		- Adding and modifying cinema theater information
-	
-	-Ticket Management:
-		-The manager can handle tickets through CRUD operations (create, read, update, delete)
-		
-	-Ticket Raports:
-		-A manager can see all tickets sold between two dates;
-		-A manager can see all tickets sold in a specific hall;
-
+The application comes with a minimalist graphical interface created using Swing.
+It has an authentication system, plus the choice of user type.
+After authentication, depending on the type of user type, it can use certain application features.
+The simple user can view cinema rooms and seats in each, reserve a seat or cancel a reservation.
+The administrator can perform all kinds of CRUD actions on the rooms and tickets.
 	
